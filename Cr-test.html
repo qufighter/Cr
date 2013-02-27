@@ -1,0 +1,47 @@
+<html>
+<head>
+	<title>Cr.elm Tests</title>
+<style>
+textarea{width:800px;height:300px;}
+</style>
+	<script src="Cr.js"></script>
+	<script src="Cr-convert.js"></script>
+	<script type="text/javascript">
+		function gel(n){
+			return document.getElementById(n);
+		}
+		function htmlToCr(){
+			gel('output').value=Cr.javascriptFromHTML(gel('toConvert').value, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+		}
+		
+		
+		function testCreation(){
+			
+
+		}
+		
+		
+	</script>
+</head>
+<body onload="testCreation()">
+	<h3>Cr.elm Tests</h3>
+	
+		<textarea onmouseover="this.select()" id="toConvert">&lt;div ID="container"&gt;some real text up in hea
+	&lt;h3 style="font-weight:normal;"&gt;Cr.elm &amp; Tests&lt;/h3&gt;
+
+
+
+
+		&lt;textarea id="toConvert"&gt;&lt;/textarea&gt;&lt;br/&gt;
+		&lt;input onclick="htmlToCr()" type="button" value="HTML to Cr.Elm JS" /&gt;&lt;br/&gt;
+		&lt;textarea id="output"&gt;&lt;/textarea&gt;&lt;br/&gt;
+	
+&lt;/div&gt;</textarea>
+		<br/>
+		<label><input type="checkbox" id="trimWhitespaceNodes"/> Trim Whitespace</label>
+		and Replace With <input type="text" id="wsReplaceWith" value="">
+		<input onclick="htmlToCr()" type="button" value="HTML to Cr.Elm JS" /><br/>
+		<textarea onmouseover="this.select()" id="output"></textarea><br/>
+	
+</body>
+</html>

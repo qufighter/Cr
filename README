@@ -1,0 +1,79 @@
+Welcome to Cr.elm Library - think of it as document.create
+
+The easy way to go from HTML to Javascript and back again!
+
+This library is designed to make it easy to turn a static
+block of HTML into a dynamic Javascript wonderhorse.
+
+This library is great if you
+	1) want to dynamically create elements in javascript
+	2) wish to avoid innerHTML
+	3) wish to populate node properties dynamically
+
+Here is what the transition looks like:
+https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644
+
+The javascript grew by only 1kb in size, 
+And now you can do neat things with it!
+
+For Example: Call internationalization functions while 
+creating the elements you need.
+
+  Cr.elm('div',{'event':['click':doSomething]},[
+    Cr.txt(chrome.i18n.getMessage('buttonTextTranslation'))
+  ],document.body);
+  
+To convert from HTML into Cr.elm javascript can be found here:
+  http://vidsbee.com/Cr.elm/fromhtml/
+
+Event Listeners - - - - - - - - - - - - - - - - - - - - - - -
+History - Present
+Back in the day only one of these addEventListener would work
+
+ var d=document.createElement('a');
+ var t=document.createTextNode('link text');
+ d.appendChild(t);
+-d.addEventListener('click',doSomething);
+ document.body.appendChild(t);
++d.addEventListener('click',doSomething);
+
+Create element is backward compatible and accounts for 
+this issue!
+
+  Cr.elm('div',{'event':['click':doSomething]},[
+    Cr.txt('link text')
+  ],document.body);
+
+The event is only added after the node is appended...
+You may also do this
+
+  var d=Cr.elm('div',{'event':['click':doSomething]},[
+    Cr.txt('link text')
+  ]);
+  Cr.appendChildElement(document.body, d);
+
+Or an even more traditional approach
+
+  var d=Cr.elm('div',{'event':['click':doSomething]},[
+    Cr.txt('link text')
+  ]);
+  document.body.appendChild(d);
+  Cr.addListeners();
+
+These conventions are up for debate, and the
+delay of listener adding may become optional
+and only apply to dated web browsers.
+
+Events are not added until the elements are
+appended to the DOM tree.  The 3 ways to do this
+are illustrated above :D
+
+License - - - - - - - - - - - - - - - - - - - - - - - - - - -
+You can use this in your projects.  There are no guarantees.
+If you make money using this then you or those who profit
+have to share the wealth.  If you use this it is your
+responsibility to make sure that the use of this code
+is fair to it's developers.  This may include attribution
+and/or direct payment.
+
+Paypal: samlarison@gmail.com
