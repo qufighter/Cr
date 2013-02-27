@@ -13,7 +13,8 @@ This library is great if you
 Here is what the transition looks like:
 https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644
 
-The javascript grew by only 1kb in size, 
+The javascript grew by only 1KB in size from HTML, 
+everything is in the same place it was...
 And now you can do neat things with it!
 
 For Example: Call internationalization functions while 
@@ -76,4 +77,4 @@ responsibility to make sure that the use of this code
 is fair to it's developers.  This may include attribution
 and/or direct payment.
 
-Paypal: samlarison@gmail.com
+Contact or Paypal: samlarison [at] gmail [dot] com
