@@ -13,6 +13,10 @@ This library is great if you
 Here is what the transition looks like:
 https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644
 
+Harnessing the power of javascript to 
+internationalize the chrome extension example above:
+https://github.com/qufighter/ColorPick/commit/5e9be5c6af7e0c1311d709aeac093ee86104e6dc
+
 The javascript grew by only 1KB in size from HTML, 
 everything is in the same place it was...
 And now you can do neat things with it!
@@ -24,7 +28,8 @@ creating the elements you need.
     Cr.txt(chrome.i18n.getMessage('buttonTextTranslation'))
   ],document.body);
   
-To convert from HTML into Cr.elm javascript can be found here:
+The HTML into Cr.elm nested javascript converter 
+can be found here:
   http://vidsbee.com/Cr.elm/fromhtml/
 
 Event Listeners - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,14 +53,14 @@ this issue!
 The event is only added after the node is appended...
 You may also do this
 
-  var d=Cr.elm('div',{'event':['click':doSomething]},[
+  var d = Cr.elm('div',{'event':['click':doSomething]},[
     Cr.txt('link text')
   ]);
-  Cr.appendChildElement(document.body, d);
+  Cr.insertNode(d, document.body);
 
 Or an even more traditional approach
 
-  var d=Cr.elm('div',{'event':['click':doSomething]},[
+  var d = Cr.elm('div',{'event':['click':doSomething]},[
     Cr.txt('link text')
   ]);
   document.body.appendChild(d);

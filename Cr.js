@@ -1,4 +1,4 @@
-//cel [create element] lib by Sam Larison @ Vidsbee.com | cr.js | cr.elm | Cr::elm
+//cel [create element] lib by Sam Larison -- Sam @ Vidsbee.com | cr.js | cr.elm | Cr::elm
 var Cr = {
 /*******************************************************************************
  Usage A: 
@@ -18,7 +18,7 @@ var Cr = {
          
          OR
          
-         Cr.appendChildElement(document.body, myelm); //calls addListeners automatically
+         Cr.insertNode(myelm, document.body); //calls addListeners automatically
          
  Creates:
          <div id="hello">
@@ -61,7 +61,7 @@ var Cr = {
           or outter most call to cr.elm).
           if no appendTo is specified then Cr.addListeners() must be called 
           after you append the element returned by the outermost Cr.elm call.
-          Or if you add the elmenet with Cr.appendChildElement(parentElem, childNode) 
+          Or if you add the elmenet with Cr.insertNode(newNode, parentElem)
           then addListeners will be called automatically.
  Empty Patteren:
           Cr.elm(' text node',{},[],document.body);
@@ -106,7 +106,7 @@ var Cr = {
 			}
 		}
 		if(appnedTo){
-			this.appendChildElement(appnedTo, ne);
+			this.insertNode(ne, appnedTo);
 		}
 	
 		return ne;//identifier unexpected error pointing here means you're missing a comma on the row before inside an array of nodes addchilds
@@ -125,7 +125,7 @@ var Cr = {
 	ent : function(textContent){
 		return document.createTextNode(this.unescapeHtml(textContent.replace(/^\s+/,"")));
 	},
-	/*Cr.paragraphs creates text nodes that may or may not contain HTML entities. 
+	/*Cr.paragraphs creates an array of nodes that may or may not contain HTML entities.
 	Each occurance of a newline "\n" creates two line breaks.  This function can just 
 	as easily create <p> tags, however this broke access to floated elements 
 	returns an array of nodes which can be appended as the addchilds for any node created
@@ -142,15 +142,27 @@ var Cr = {
 		return elmArray;
 	},
 	/* Appends the child element and also attaches any pending listeners in one step */
+	/* depricated, use insertNode instead v */
 	appendChildElement : function(parentElem, childNode){
 		parentElem.appendChild(childNode);
+		this.addListeners();
+	},
+	/* Appends the child element and also attaches any pending listeners in one step */
+	/* it is expected that parentNode is already attached to the visible document.body */
+	insertNode : function(newNode, parentElem, optionalInsertBefore){
+		if(!parentElem)parentElem=document.body;
+		if(optionalInsertBefore && optionalInsertBefore.parentNode == parentElem){
+			parentElem.insertBefore(newNode,optionalInsertBefore);
+		}else{
+			parentElem.appendChild(newNode);
+		}
 		this.addListeners();
 	},
 	/* in many situations, after you append the element(s), 
 	(unless Cr.elm appends them for you) you must call Cr.addListeners() 
 	if you have used the attribute events to specify event listeners. 
-	Use the above function instead: Cr.appendChildElement(parentElem, childNode);
-	Listners cannot be attached until the nodes are inserted into the DOM
+	Use the above function instead: Cr.insertNode(newNode, parentElem);
+	Listners should not be attached until the nodes are inserted into the DOM
 	*/
 	addListeners : function(){
 		for( i in this.pendingListenrs ){
