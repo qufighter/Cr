@@ -11,12 +11,17 @@ textarea{width:800px;height:300px;}
 			return document.getElementById(n);
 		}
 		function htmlToCr(){
-			gel('output').value=Cr.javascriptFromHTML(gel('toConvert').value, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+			gel('output').value=Cr.javascriptFromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+		}
+		function htmlToCrJson(){
+			gel('output').value=Cr.JSONfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+		}
+		function htmlToCrJsObj(){
+			gel('output').value=Cr.javascriptObjectfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
 		}
 		
-		
 		function testCreation(){
-			
+			htmlToCr();
 
 		}
 		
@@ -25,7 +30,9 @@ textarea{width:800px;height:300px;}
 </head>
 <body onload="testCreation()">
 	<h3>Cr.elm Tests</h3>
-	
+	<small>Please remember: as always when appending elements, it is best to put them all as a child node of some parent node, and then append the parent node 
+	<br/>thus appending all of the nodes at once and generating fewer events and CPU stress!
+	</small><br/>	
 		<textarea onmouseover="this.select()" id="toConvert">&lt;div ID="container"&gt;some real text up in hea
 	&lt;h3 style="font-weight:normal;"&gt;Cr.elm &amp; Tests&lt;/h3&gt;
 
@@ -40,8 +47,14 @@ textarea{width:800px;height:300px;}
 		<br/>
 		<label><input type="checkbox" id="trimWhitespaceNodes"/> Trim Whitespace</label>
 		and Replace With <input type="text" id="wsReplaceWith" value="">
-		<input onclick="htmlToCr()" type="button" value="HTML to Cr.Elm JS" /><br/>
-		<textarea onmouseover="this.select()" id="output"></textarea><br/>
-	
+		<label><input type="checkbox" id="prettyPrint" checked="checked"/> Make Tidy</label>
+		<br/>
+		<input onclick="htmlToCr()" type="button" value="HTML to Cr.elm JS Function" title="Converts static HTML into dynamic javascript that can be run from a script tag, the calls to the Cr library will handle creation of nodes.  Fastest though Single Purpose." />
+		<input onclick="htmlToCrJson()" type="button" value="HTML to Cr.elm JSON String" title="Convert static HTML into JSON string that can be parsed by Cr.fromJSON.  Most versitile yet `slowest`" />
+		<input onclick="htmlToCrJsObj()" type="button" value="HTML to Cr.elm JS Object" title="Convert static HTML into a Javascript Object that can be parsed by Cr.fromJSObject  Not as versitile as JSON string, slower than raw Cr calls, intermediary." />
+		<br/><textarea onmouseover="this.select()" id="output"></textarea><br/>
+		
+		//how to use:
+		
 </body>
 </html>

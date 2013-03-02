@@ -7,7 +7,7 @@ block of HTML into a dynamic Javascript wonderhorse.
 
 This library is great if you
 	1) want to dynamically create elements in javascript
-	2) wish to avoid innerHTML
+	2) wish to avoid innerHTML or document.write
 	3) wish to populate node properties dynamically
 
 Here is what the transition looks like:

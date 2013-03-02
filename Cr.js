@@ -162,7 +162,7 @@ var Cr = {
 	(unless Cr.elm appends them for you) you must call Cr.addListeners() 
 	if you have used the attribute events to specify event listeners. 
 	Use the above function instead: Cr.insertNode(newNode, parentElem);
-	Listners should not be attached until the nodes are inserted into the DOM
+	Listeners should not be attached until the nodes are inserted into the DOM
 	*/
 	addListeners : function(){
 		for( i in this.pendingListenrs ){
@@ -193,3 +193,4 @@ var Cr = {
 	},
 	pendingListenrs : []
 }
+//var CR=Cr;
