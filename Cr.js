@@ -158,6 +158,9 @@ var Cr = {
 		}
 		this.addListeners();
 	},
+	insertNodes : function(newNode, parentElem, optionalInsertBefore){
+		this.insertNode(newNode, parentElem, optionalInsertBefore);
+	},
 	/* in many situations, after you append the element(s), 
 	(unless Cr.elm appends them for you) you must call Cr.addListeners() 
 	if you have used the attribute events to specify event listeners. 

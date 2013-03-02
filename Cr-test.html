@@ -3,8 +3,10 @@
 	<title>Cr.elm Tests</title>
 <style>
 textarea{width:800px;height:300px;}
+#test_nodes{border:3px dashed red;margin:10px;padding:10px;}
 </style>
 	<script src="Cr.js"></script>
+	<script src="Cr-json.js"></script>
 	<script src="Cr-convert.js"></script>
 	<script type="text/javascript">
 		function gel(n){
@@ -12,12 +14,34 @@ textarea{width:800px;height:300px;}
 		}
 		function htmlToCr(){
 			gel('output').value=Cr.javascriptFromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
-		}
-		function htmlToCrJson(){
-			gel('output').value=Cr.JSONfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+			verify(1);
 		}
 		function htmlToCrJsObj(){
 			gel('output').value=Cr.javascriptObjectfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+			verify(2);
+		}
+		function htmlToCrJson(){
+			gel('output').value=Cr.JSONfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+			verify(3);
+		}
+		
+		
+		function verify(m){
+			gel('test_nodes').innerHTML='';
+			switch(m){
+			case 1:
+				var node=eval(gel('output').value);
+				gel('test_nodes').appendChild(node);
+			break;
+			case 2:
+				eval('var node='+gel('output').value+';');
+				Cr.insertNodes(Cr.fromJsonObject(node),gel('test_nodes'));
+			break;
+			case 3:
+				var node=Cr.fromJsonString(gel('output').value);
+				Cr.insertNodes(node,gel('test_nodes'));
+			break;
+			}
 		}
 		
 		function testCreation(){
@@ -33,7 +57,7 @@ textarea{width:800px;height:300px;}
 	<small>Please remember: as always when appending elements, it is best to put them all as a child node of some parent node, and then append the parent node 
 	<br/>thus appending all of the nodes at once and generating fewer events and CPU stress!
 	</small><br/>	
-		<textarea onmouseover="this.select()" id="toConvert">&lt;div ID="container"&gt;some real text up in hea
+		<textarea id="toConvert">&lt;div ID="container"&gt;some real text up in hea
 	&lt;h3 style="font-weight:normal;"&gt;Cr.elm &amp; Tests&lt;/h3&gt;
 
 
@@ -50,9 +74,16 @@ textarea{width:800px;height:300px;}
 		<label><input type="checkbox" id="prettyPrint" checked="checked"/> Make Tidy</label>
 		<br/>
 		<input onclick="htmlToCr()" type="button" value="HTML to Cr.elm JS Function" title="Converts static HTML into dynamic javascript that can be run from a script tag, the calls to the Cr library will handle creation of nodes.  Fastest though Single Purpose." />
-		<input onclick="htmlToCrJson()" type="button" value="HTML to Cr.elm JSON String" title="Convert static HTML into JSON string that can be parsed by Cr.fromJSON.  Most versitile yet `slowest`" />
 		<input onclick="htmlToCrJsObj()" type="button" value="HTML to Cr.elm JS Object" title="Convert static HTML into a Javascript Object that can be parsed by Cr.fromJSObject  Not as versitile as JSON string, slower than raw Cr calls, intermediary." />
+		<input onclick="htmlToCrJson()" type="button" value="HTML to Cr.elm JSON String" title="Convert static HTML into JSON string that can be parsed by Cr.fromJSON.  Most versitile yet `slowest`" />
 		<br/><textarea onmouseover="this.select()" id="output"></textarea><br/>
+		
+		<div>
+		<div id="test_results">Creates</div>
+		<div id="test_nodes"></div>
+		</div>
+		
+		<div id="howtouse"></div>
 		
 		//how to use:
 		

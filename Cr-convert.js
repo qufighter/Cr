@@ -79,6 +79,7 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 	var extraQuotes='';
 	var quo_newline='\\n';
 	var quo_tabs='\\t';	// for visible tabs change to '	'
+	var esc='\\';
 	if(!oneline){
 		newline="\r\n";
 		tab="\t";
@@ -87,8 +88,9 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 		extraQuotes='"';
 	}
 	if(opt.s){
-		quo_newline='\\\\n';
-		quo_tabs='\\\\t';
+		//quo_newline='\\\\n';
+		//quo_tabs='\\\\t';
+		esc='\\\\';
 	}
 	if(removeWhitespace){
 		if(typeof(whitespaceReplaceWith)=='undefined')whitespaceReplaceWith='';
@@ -138,6 +140,8 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 					tx=tx.replace(/\n/g,quo_newline).replace(/\r/g,'');
 				
 				tx=tx.replace(/\t/g,quo_tabs);
+				
+				tx=tx.replace(/\\/g,esc);
 				
 				if(tx.length > 0)
 					js+=indent+opt.t+'"'+tx+'"'+opt.n+','+newline;
