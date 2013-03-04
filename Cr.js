@@ -158,8 +158,14 @@ var Cr = {
 		}
 		this.addListeners();
 	},
-	insertNodes : function(newNode, parentElem, optionalInsertBefore){
-		this.insertNode(newNode, parentElem, optionalInsertBefore);
+	insertNodes : function(newNodes, parentElem, optionalInsertBefore){
+		if(typeof(newNodes)!='array')
+			this.insertNode(newNodes, parentElem, optionalInsertBefore);
+		else{
+			for(var i=0,l=newNodes.length;i<l;i++){
+				this.insertNode(newNodes[i], parentElem, optionalInsertBefore);
+			}
+		}
 	},
 	/* in many situations, after you append the element(s), 
 	(unless Cr.elm appends them for you) you must call Cr.addListeners() 
