@@ -1,9 +1,10 @@
 <html>
 <head>
-	<title>Cr.elm Tests</title>
+	<title>Cr.elm Conversion from HTML and Verifier</title>
 <style>
 textarea{width:800px;height:300px;}
 #test_nodes{border:3px dashed red;margin:10px;padding:10px;}
+#validation_buttons{display:none;}
 </style>
 	<script src="Cr.js"></script>
 	<script src="Cr-json.js"></script>
@@ -14,39 +15,42 @@ textarea{width:800px;height:300px;}
 		}
 		function htmlToCr(){
 			gel('output').value=Cr.javascriptFromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
-			verify(1);
+			verifyCrJS()
+			gel('validation_buttons').style.display='none';
 		}
 		function htmlToCrJsObj(){
 			gel('output').value=Cr.javascriptObjectfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
-			verify(2);
+			verifyCrObject()
+			gel('validation_buttons').style.display='none';
 		}
 		function htmlToCrJson(){
 			gel('output').value=Cr.JSONfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
-			verify(3);
+			verifyCrJSON()
+			gel('validation_buttons').style.display='none';
 		}
 		
-		
-		function verify(m){
+		function verifyCrJS(){
 			gel('test_nodes').innerHTML='';
-			switch(m){
-			case 1:
-				var node=eval(gel('output').value);
-				gel('test_nodes').appendChild(node);
-			break;
-			case 2:
-				eval('var node='+gel('output').value+';');
-				Cr.insertNodes(Cr.fromJsonObject(node),gel('test_nodes'));
-			break;
-			case 3:
-				var node=Cr.fromJsonString(gel('output').value);
-				Cr.insertNodes(node,gel('test_nodes'));
-			break;
-			}
+			var node=eval(gel('output').value);
+			gel('test_nodes').appendChild(node);
 		}
-		
+		function verifyCrObject(){
+			gel('test_nodes').innerHTML='';
+			eval('var node='+gel('output').value+';');
+			Cr.insertNodes(Cr.fromJsonObject(node),gel('test_nodes'));
+		}
+		function verifyCrJSON(){
+			gel('test_nodes').innerHTML='';
+			var node=Cr.fromJsonString(gel('output').value);
+			Cr.insertNodes(node,gel('test_nodes'));
+		}
+
+		function unlockValidationButtons(){
+			gel('validation_buttons').style.display='inline';
+		}
+				
 		function testCreation(){
 			htmlToCr();
-
 		}
 		
 		//Cr.delayedListeners=false;
@@ -57,11 +61,12 @@ textarea{width:800px;height:300px;}
 	</script>
 </head>
 <body onload="testCreation()">
-	<h3>Cr.elm Tests</h3>
+	<h3>Cr.elm Conversion from HTML and Verifier</h3>
 	<small>Please remember: as always when appending elements, it is best to put them all as a child node of some parent node, and then append the parent node 
 	thus appending all of the nodes at once and generating fewer events and CPU stress!<br/>
 	</small><br/>	
-		<textarea id="toConvert">&lt;div&gt;&lt;h1&gt;Cr.elm - innerHTML be Gone!&lt;/h1&gt;
+	Input HTML<br/>
+		<textarea onmouseover="this.select()" id="toConvert">&lt;div&gt;&lt;h1&gt;Cr.elm - innerHTML be Gone!&lt;/h1&gt;
 
 &lt;img src="../Cr.png" onclick="clickFunctionTest()" alt="Javascript CreateElement Library Cr.elm" style="float:right;height:67px;width:500px;"/&gt;
 
@@ -72,17 +77,37 @@ Imagine you have to create a bunch of elements using javascript.  Go ahead imagi
 For the sake of elegance and simplicity and correct attachment of events you should be using document.createElement then document.body.appendChild EXCEPT what a god awful amount of writing and lines of code and space that takes up.
 &lt;br/&gt;&lt;br/&gt;&lt;/div&gt;</textarea>
 		<br/>
-		<label><input type="checkbox" id="trimWhitespaceNodes"/> Trim Whitespace</label>
+		<label><input type="checkbox" id="trimWhitespaceNodes" checked="checked"/> Trim Whitespace</label>
 		and Replace With <input type="text" id="wsReplaceWith" value="">
 		<label><input type="checkbox" id="prettyPrint" checked="checked"/> Make Tidy</label>
 		<br/>
 		<input onclick="htmlToCr()" type="button" value="HTML to Cr.elm JS Function" title="Converts static HTML into dynamic javascript that can be run from a script tag, the calls to the Cr library will handle creation of nodes.  Fastest though Single Purpose." />
 		<input onclick="htmlToCrJsObj()" type="button" value="HTML to Cr.elm JS Object" title="Convert static HTML into a Javascript Object that can be parsed by Cr.fromJSObject  Not as versitile as JSON string, slower than raw Cr calls, intermediary." />
 		<input onclick="htmlToCrJson()" type="button" value="HTML to Cr.elm JSON String" title="Convert static HTML into JSON string that can be parsed by Cr.fromJSON.  Most versitile yet `slowest`" />
-		<br/><textarea onmouseover="this.select()" id="output"></textarea><br/>
+		<br/>Output<br/><textarea onmouseover="this.select()" id="output" onclick="unlockValidationButtons()" onkeyup="unlockValidationButtons()"></textarea><br/>
 		
 		<div>
-		<div id="test_results">Creates</div>
+<script type="text/javascript">
+//var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('toConvert'), {
+//        lineNumbers: true,
+//        matchBrackets: true,
+//        mode: "text/x-csrc"
+//      });
+//var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('output'), {
+//        lineNumbers: true,
+//        matchBrackets: true,
+//        mode: "text/x-csrc"
+//      });    
+</script>
+
+
+		<div id="test_results">
+		<span id="validation_buttons">
+<input onclick="verifyCrJS()" type="button" value="Test as Cr.elm function calls" title="Validate Cr.elm function calls" />
+<input onclick="verifyCrObject()" type="button" value="Test as Cr javascript object" title="Validate Cr Object" />
+<input onclick="verifyCrJSON()" type="button" value="Test as Cr JSON string" title="Validate Cr JSON" />
+		</span>
+		Test Creates:</div>
 		<div id="test_nodes"></div>
 		
 			Note: Text nodes may not append correctly unless they are a child of a parent node since<br/>
@@ -93,8 +118,12 @@ For the sake of elegance and simplicity and correct attachment of events you sho
 		
 		
 		<h3>how to use</h3>
-		Simply include the appropriate Cr libraries to your document <head> and then add the javascript code generated to a script tag.<br/><br/>
-			
+		Simply include the appropriate Cr libraries to your document <head> and then add the javascript code generated to a script tag.
+		<br/><br/>
+		document.body must exist for these to work, so it is simplest to add the script tag to the body tag
+		<br/><br/>
+		for extra assurance don't run your script until the onload or DOMNodeInserted event fires.
+		<br/><br/>
 		How to use Cr Javascript Function Calls<br/>
 		
 <textarea id="touse-cr-js" name="touse-cr-js">
