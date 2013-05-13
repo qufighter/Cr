@@ -132,7 +132,7 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 					js+=','+extraQuotes+'document.body'+extraQuotes;
 				}
 				js+=opt.n+','+newline;
-			}else if(cn[i].nodeType == 3){
+			}else if(cn[i].nodeType == 3){//text nodes
 				var tx=cn[i].nodeValue;
 				if(removeWhitespace && tx !=' '){
 					tx=tx.replace(/^\s+|\s+$/g, whitespaceReplaceWith);
