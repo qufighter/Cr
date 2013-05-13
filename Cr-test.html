@@ -49,20 +49,21 @@ textarea{width:800px;height:300px;}
 
 		}
 		
+		//Cr.delayedListeners=false;
+		function clickFunctionTest(){
+			alert('click worked!');
+		}
 		
 	</script>
 </head>
 <body onload="testCreation()">
 	<h3>Cr.elm Tests</h3>
 	<small>Please remember: as always when appending elements, it is best to put them all as a child node of some parent node, and then append the parent node 
-	thus appending all of the nodes at once and generating fewer events and CPU stress!<br/><br/>
-	
-	Text nodes may not append correctly unless they are a child of a parent node since<br/>
-	Cr.txt never auto-appends to the DOM tree.  In these rare cases you can use Cr.elm('text content',{},[],document.body);
+	thus appending all of the nodes at once and generating fewer events and CPU stress!<br/>
 	</small><br/>	
 		<textarea id="toConvert">&lt;div&gt;&lt;h1&gt;Cr.elm - innerHTML be Gone!&lt;/h1&gt;
 
-&lt;img src="../Cr.png" alt="Javascript CreateElement Library Cr.elm" style="float:right;width:500px;"/&gt;
+&lt;img src="../Cr.png" onclick="clickFunctionTest()" alt="Javascript CreateElement Library Cr.elm" style="float:right;height:67px;width:500px;"/&gt;
 
 &lt;h3&gt;Simplifying document.createElement&lt;/h3&gt;
 
@@ -83,11 +84,151 @@ For the sake of elegance and simplicity and correct attachment of events you sho
 		<div>
 		<div id="test_results">Creates</div>
 		<div id="test_nodes"></div>
+		
+			Note: Text nodes may not append correctly unless they are a child of a parent node since<br/>
+	Cr.txt never auto-appends to the DOM tree.  In these rare cases you can use Cr.elm('text content',{},[],document.body);<br/>
+	Although it is recommended to encase your entire block in a div anyway to save on CPU and specify destination only once.
 		</div>
 		
+		
+		
+		<h3>how to use</h3>
+		Simply include the appropriate Cr libraries to your document <head> and then add the javascript code generated to a script tag.<br/><br/>
+			
+		How to use Cr Javascript Function Calls<br/>
+		
+<textarea id="touse-cr-js" name="touse-cr-js">
+&lt;script type="text/javascript" src="Cr_min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+	//paste your generated HTML to Cr.elm JS Function code here in place of the following example
+	
+	var mydiv=Cr.elm('div',{style:'color:red'},[Cr.elm('Hello World')],document.body);
+	mydiv.scrollIntoViewIfNeeded();
+&lt;/script&gt;</textarea>
+<script type="text/javascript">
+var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('touse-cr-js'), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-csrc"
+      });
+</script>
+
+<br/>
+To use JS object or JSON string version the appropriate conversion function must be called.
+<br/><br/>
+Javascript Objects<br/>
+
+<textarea id="touse-cr-jsonObj" name="touse-cr-jsonObj">
+&lt;script type="text/javascript" src="Cr.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="Cr-json.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+	//paste your generated Javascript Object into the following variable
+	
+	CrJSONobject={elm:["div",{style:"color:red"},[{txt:["Hello World"]}],document.body]};
+	var node_s=Cr.fromJsonObject(CrJSONobject);
+	Cr.insertNodes(node_s,document.body);
+
+	
+&lt;/script&gt;</textarea>
+<script type="text/javascript">
+var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('touse-cr-jsonObj'), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-csrc"
+      });
+</script>
+
+<br/>JSON Strings<br/>
+
+<textarea id="touse-cr-jsonstring" name="touse-cr-jsonstring">
+&lt;script type="text/javascript" src="Cr.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="Cr-json.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+	//paste your generated JSON into the following string variable
+	// (between single quotes CrJSONstring='... ...';)
+	
+	CrJSONstring='{"elm":["div",{"style":"color:red"},[{"txt":["Hello World"]}],"document.body"]}';
+	var node_s=Cr.fromJsonString(CrJSONstring);
+	Cr.insertNodes(node_s,document.body);
+
+	
+&lt;/script&gt;</textarea>
+<script type="text/javascript">
+var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('touse-cr-jsonstring'), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-csrc"
+      });
+</script>
+
 		<div id="howtouse"></div>
 		
-		//how to use:
-		
+		<h3>converstion cevats - legacy events</h3>
+		If you had complex events like this you may be in for a bit of a shock
+		<br/><br/>
+		&lt;a href="#" onclick="handleClick(this,event,myvariable)"&gt;link&lt;/a&gt;
+		<br/><br/>
+		It will be much simplified by Cr to simply pass the event to the function, something like this:
+		<br/><br/>
+		&lt;a href="#" onclick="handleClick(event)"&gt;link&lt;/a&gt;
+		<br/><br/>
+		The reasons for this are simply the nature of elm.addEventListener('click',fn,useCapture); does not allow function parameters.
+		<br/><br/>
+		You may have to use some helper functions to get the event's target or srcElement (to get the "this" passed above)
+		<br/><br/>
+		Here are the helper functions followed by an example of your new handleClick function:
+		<br/><br/>
+<textarea id="legacyevents" name="legacyevents">
+function getEventTarget(ev){
+	ev = ev || event;
+	var targ=(typeof(ev.target)!='undefined') ? ev.target : ev.srcElement;
+	if(targ !=null){
+	    if(targ.nodeType==3)
+	        targ=targ.parentNode;
+	}
+	return targ;
+}
+function preventEventDefault(ev){
+	ev = ev || event;
+	if(ev.preventDefault)ev.preventDefault();
+	ev.returnValue=false;
+	return false;
+}
+function stopEventPropagation(ev){
+	ev = ev || event;
+	if(ev.stopPropagation)ev.stopPropagation();
+	ev.cancelBubble=true;
+	ev.cancel=true;
+}
+function cancelEvent(e){
+  e = e ? e : window.event;
+  if(e.stopPropagation)
+    e.stopPropagation();
+  if(e.preventDefault)
+    e.preventDefault();
+  e.cancelBubble = true;
+  e.cancel = true;
+  e.returnValue = false;
+  return false;
+}
+
+function handleClick(ev){
+	ev = ev || event;
+	clickedElement = getEventTarget(ev);
+	
+	/*your code goes here, optionally; to cancel the event as needed (below).*/
+	
+	//stopEventPropagation(ev);
+	//return preventEventDefault(ev);
+	//return cancelEvent(ev);//performs both stopPropogation and preventDefault
+}</textarea>
+<script type="text/javascript">
+var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('legacyevents'), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-csrc"
+      });
+</script>
+
 </body>
 </html>
