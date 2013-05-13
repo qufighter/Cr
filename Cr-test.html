@@ -55,19 +55,21 @@ textarea{width:800px;height:300px;}
 <body onload="testCreation()">
 	<h3>Cr.elm Tests</h3>
 	<small>Please remember: as always when appending elements, it is best to put them all as a child node of some parent node, and then append the parent node 
-	<br/>thus appending all of the nodes at once and generating fewer events and CPU stress!
-	</small><br/>	
-		<textarea id="toConvert">&lt;div ID="container"&gt;some real text up in hea
-	&lt;h3 style="font-weight:normal;"&gt;Cr.elm &amp; Tests&lt;/h3&gt;
-
-
-
-
-		&lt;textarea id="toConvert"&gt;&lt;/textarea&gt;&lt;br/&gt;
-		&lt;input onclick="htmlToCr()" type="button" value="HTML to Cr.Elm JS" /&gt;&lt;br/&gt;
-		&lt;textarea id="output"&gt;&lt;/textarea&gt;&lt;br/&gt;
+	thus appending all of the nodes at once and generating fewer events and CPU stress!<br/><br/>
 	
-&lt;/div&gt;</textarea>
+	Text nodes may not append correctly unless they are a child of a parent node since<br/>
+	Cr.txt never auto-appends to the DOM tree.  In these rare cases you can use Cr.elm('text content',{},[],document.body);
+	</small><br/>	
+		<textarea id="toConvert">&lt;div&gt;&lt;h1&gt;Cr.elm - innerHTML be Gone!&lt;/h1&gt;
+
+&lt;img src="../Cr.png" alt="Javascript CreateElement Library Cr.elm" style="float:right;width:500px;"/&gt;
+
+&lt;h3&gt;Simplifying document.createElement&lt;/h3&gt;
+
+Imagine you have to create a bunch of elements using javascript.  Go ahead imagine it, I'll wait.  Sure you could just use .innerHTML, or you could use JQuery .html - however then your HTML code string must be parsed into elements.
+&lt;br/&gt;&lt;br/&gt;
+For the sake of elegance and simplicity and correct attachment of events you should be using document.createElement then document.body.appendChild EXCEPT what a god awful amount of writing and lines of code and space that takes up.
+&lt;br/&gt;&lt;br/&gt;&lt;/div&gt;</textarea>
 		<br/>
 		<label><input type="checkbox" id="trimWhitespaceNodes"/> Trim Whitespace</label>
 		and Replace With <input type="text" id="wsReplaceWith" value="">
