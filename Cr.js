@@ -1,5 +1,6 @@
 //cel [create element] lib by Sam Larison -- Sam @ Vidsbee.com | cr.js | cr.elm | Cr::elm
 var Cr = {
+	delayedListeners : true,//use an array of loadevents:[] for early attachment
 /*******************************************************************************
  Usage A: 
          Cr.elm('div',{'id':'hello','event':['click',function(){alert('hi');}]},[
@@ -89,13 +90,22 @@ var Cr = {
 					for(z in lev)
 						this.registerEventListener(ne,lev[z][0],lev[z][1],lev[z][2]);
 			}
+			if( attributes.event || attributes.events ){
+				var lev=attributes.event || attributes.events;
+				if(this.delayedListeners){
+					if(typeof(lev[0])=='string') this.pendingListenrs.push([ne,[lev]]);
+					else this.pendingListenrs.push([ne,lev]);
+				}else{
+					if(typeof(lev[0])=='string') this.registerEventListener(ne,lev[0],lev[1],lev[2]);
+					else if(lev.length)
+						for(z in lev)
+							this.registerEventListener(ne,lev[z][0],lev[z][1],lev[z][2]);
+				}
+			}
 		}
 		for( i in attributes ){
-			if( i.substring(0,5) == 'event' ){// || events
-				if(typeof(attributes[i][0])=='string') this.pendingListenrs.push([ne,[attributes[i]]]);
-				else this.pendingListenrs.push([ne,attributes[i]]);
-			}else if( i.substring(0,9) == 'loadevent' ){// || loadevents
-				//handled preemptively
+			if( i.substring(0,5) == 'event' || i.substring(0,9) == 'loadevent' ){
+				//handled earlier
 			}else if( i == 'checked' || i == 'selected'){
 				if(attributes[i])ne.setAttribute(i,i);
 			}else ne.setAttribute(i,attributes[i]);
