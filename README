@@ -77,8 +77,9 @@ are illustrated above :D
 The key 'event' is interchangeable with 'events'
 and can be an array of arrays instead of just one.
 
-If you really must attach events earlier (before appending to the tree)
-use loadevents instead of events
+If you really must attach events earlier 
+(before appending to the tree)
+use 'loadevents' instead of 'events'
 
 License - - - - - - - - - - - - - - - - - - - - - - - - - - -
 You can use this in your projects.  There are no guarantees.
