@@ -45,4 +45,4 @@ Cr.img = function(attributes){
 	}
 	attributes=newAttributesObj;
 	return this.elm('img',attributes);
-}
+};

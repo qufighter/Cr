@@ -6,7 +6,7 @@ Cr.javascriptFromHTML = function(html,oneline,removeWhitespace,whitespaceReplace
 		q:false,	//extra quotes
 		s:false		//escape newlines
 	},html,oneline,removeWhitespace,whitespaceReplaceWith);
-}
+};
 
 Cr.JSONfromHTML = function(html,oneline,removeWhitespace,whitespaceReplaceWith){
 	return this.__performConversionFromHTML({
@@ -16,7 +16,7 @@ Cr.JSONfromHTML = function(html,oneline,removeWhitespace,whitespaceReplaceWith){
 		q:true,
 		s:true
 	},html,oneline,removeWhitespace,whitespaceReplaceWith);
-}
+};
 
 Cr.javascriptObjectfromHTML = function(html,oneline,removeWhitespace,whitespaceReplaceWith){
 	return this.__performConversionFromHTML({
@@ -26,7 +26,7 @@ Cr.javascriptObjectfromHTML = function(html,oneline,removeWhitespace,whitespaceR
 		q:false,
 		s:false
 	},html,oneline,removeWhitespace,whitespaceReplaceWith);
-}
+};
 
 Cr.nodeToCrJavascript = function(node,oneline,removeWhitespace,whitespaceReplaceWith){
 	this.__performConversionOfNode({
@@ -36,7 +36,7 @@ Cr.nodeToCrJavascript = function(node,oneline,removeWhitespace,whitespaceReplace
 		q:false,	//extra quotes
 		s:false		//escape newlines
 	},node,oneline,removeWhitespace,whitespaceReplaceWith)
-}
+};
 
 Cr.nodeToCrJSON = function(node,oneline,removeWhitespace,whitespaceReplaceWith){
 	this.__performConversionOfNode({
@@ -46,7 +46,7 @@ Cr.nodeToCrJSON = function(node,oneline,removeWhitespace,whitespaceReplaceWith){
 		q:true,
 		s:true
 	},node,oneline,removeWhitespace,whitespaceReplaceWith)
-}
+};
 
 Cr.nodeToCrJavascriptObject = function(node,oneline,removeWhitespace,whitespaceReplaceWith){
 	this.__performConversionOfNode({
@@ -56,13 +56,13 @@ Cr.nodeToCrJavascriptObject = function(node,oneline,removeWhitespace,whitespaceR
 		q:false,
 		s:false
 	},node,oneline,removeWhitespace,whitespaceReplaceWith)
-}
+};
 /* internal use only */
 Cr.__performConversionFromHTML = function(opt,html,oneline,removeWhitespace,whitespaceReplaceWith){
 	var dv=document.createElement('div');
 	dv.innerHTML=html;
 	return this.__performConversionFromNodeChildren(opt,dv,oneline,removeWhitespace,whitespaceReplaceWith);
-}
+};
 Cr.__performConversionOfNode = function(opt,node,oneline,removeWhitespace,whitespaceReplaceWith){
 	var dv;
 	if(node.parentNode)dv=parentNode;
@@ -71,7 +71,7 @@ Cr.__performConversionOfNode = function(opt,node,oneline,removeWhitespace,whites
 		dv.appendChild(node);
 	}
 	return this.__performConversionFromNodeChildren(opt,dv,oneline,removeWhitespace,whitespaceReplaceWith);
-}
+};
 Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitespace,whitespaceReplaceWith){
 	var jsout='';
 	var newline='';
@@ -150,7 +150,7 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 		if(js.length > 0)
 			js=js.substr(0,js.length-(newline.length+1));
 		return js;
-	}
+	};
 	if(node.childNodes && node.childNodes.length > 0) jsout = crChildren(node,0);
 	return jsout;
-}
+};
