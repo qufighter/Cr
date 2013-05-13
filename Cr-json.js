@@ -1,7 +1,7 @@
 /* */
 Cr.fromJsonString = function(jsonString){
 	return this.fromJsonObject( JSON.parse(jsonString) );
-}
+};
 
 Cr.fromJsonObject = function(jsonObject){
 	//Cr.elm(0 is element type, 1 is attributes, 2 is child nodes, 3 is append to)
@@ -23,7 +23,7 @@ Cr.fromJsonObject = function(jsonObject){
 		if(i=='txt')
 			return this.txt(jsonObject[i][0].replace(/\\n/g,"\n").replace(/\\t/g,"\t"));	
 	}
-}
+};
 Cr.fromArrayOfJsonObject = function(jsonObjectArray){
 	var nodesArr=[];
 	if(jsonObjectArray){
@@ -32,7 +32,7 @@ Cr.fromArrayOfJsonObject = function(jsonObjectArray){
 		}
 	}
 	return nodesArr;
-}
+};
 Cr.functionForString = function(fnName){
 	//perform test, if suitiable function does not exist for the string name, then
 	
@@ -46,7 +46,7 @@ Cr.functionForString = function(fnName){
 	//default simple handler finds functions relative to window object... 
 	//searches within objects.... such that "myObject.myFunction" is a valid fnName to search
 	return this.__functionForString(fnName);
-}
+};
 Cr.__functionForString = function(fnName){
 	var fnOut=function(){};
 	//certain function base name may be restricted
@@ -68,4 +68,4 @@ Cr.__functionForString = function(fnName){
 	}
 	if(typeof(fnOut)!='function')fnOut=function(){};
 	return fnOut;
-}
+};
