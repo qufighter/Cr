@@ -159,22 +159,23 @@ var Cr = {
 	},
 	/* Appends the child element and also attaches any pending listeners in one step */
 	/* it is expected that parentNode is already attached to the visible document.body */
-	insertNode : function(newNode, parentElem, optionalInsertBefore){
+	insertNode : function(newNode, parentElem, optionalInsertBefore, skipListeners){
 		if(!parentElem)parentElem=document.body;
 		if(optionalInsertBefore && optionalInsertBefore.parentNode == parentElem){
 			parentElem.insertBefore(newNode,optionalInsertBefore);
 		}else{
 			parentElem.appendChild(newNode);
 		}
-		this.addListeners();
+		if(!skipListeners)this.addListeners();
 	},
 	insertNodes : function(newNodes, parentElem, optionalInsertBefore){
 		if(typeof(newNodes)!='array')
 			this.insertNode(newNodes, parentElem, optionalInsertBefore);
 		else{
 			for(var i=0,l=newNodes.length;i<l;i++){
-				this.insertNode(newNodes[i], parentElem, optionalInsertBefore);
+				this.insertNode(newNodes[i], parentElem, optionalInsertBefore, true);
 			}
+			this.addListeners();
 		}
 	},
 	/* in many situations, after you append the element(s), 
