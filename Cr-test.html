@@ -74,7 +74,9 @@ textarea{width:800px;height:300px;}
 
 Imagine you have to create a bunch of elements using javascript.  Go ahead imagine it, I'll wait.  Sure you could just use .innerHTML, or you could use JQuery .html - however then your HTML code string must be parsed into elements.
 &lt;br/&gt;&lt;br/&gt;
-For the sake of elegance and simplicity and correct attachment of events you should be using document.createElement then document.body.appendChild EXCEPT what a god awful amount of writing and lines of code and space that takes up.
+For the sake of elegance and simplicity and correct attachment of events you should be using document.createElement then document.body.appendChild; EXCEPT what a god awful amount of writing and lines of code and space that takes up.
+&lt;br/&gt;&lt;br/&gt;
+Instead using the elm function of the Cr library one can create and nest nodes with ease!
 &lt;br/&gt;&lt;br/&gt;&lt;/div&gt;</textarea>
 		<br/>
 		<label><input type="checkbox" id="trimWhitespaceNodes" checked="checked"/> Trim Whitespace</label>
@@ -84,7 +86,7 @@ For the sake of elegance and simplicity and correct attachment of events you sho
 		<input onclick="htmlToCr()" type="button" value="HTML to Cr.elm JS Function" title="Converts static HTML into dynamic javascript that can be run from a script tag, the calls to the Cr library will handle creation of nodes.  Fastest though Single Purpose." />
 		<input onclick="htmlToCrJsObj()" type="button" value="HTML to Cr.elm JS Object" title="Convert static HTML into a Javascript Object that can be parsed by Cr.fromJSObject  Not as versitile as JSON string, slower than raw Cr calls, intermediary." />
 		<input onclick="htmlToCrJson()" type="button" value="HTML to Cr.elm JSON String" title="Convert static HTML into JSON string that can be parsed by Cr.fromJSON.  Most versitile yet `slowest`" />
-		<br/>Output<br/><textarea onmouseover="this.select()" id="output" onclick="unlockValidationButtons()" onkeyup="unlockValidationButtons()"></textarea><br/>
+		<br/>Cr Code<br/><textarea onmouseover="this.select()" id="output" onclick="unlockValidationButtons()" onkeyup="unlockValidationButtons()"></textarea><br/>
 		
 		<div>
 <script type="text/javascript">
