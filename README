@@ -24,7 +24,7 @@ And now you can do neat things with it!
 For Example: Call internationalization functions while 
 creating the elements you need.
 
-  Cr.elm('div',{'event':['click':doSomething]},[
+  Cr.elm('div',{'event':['click',doSomething]},[
     Cr.txt(chrome.i18n.getMessage('buttonTextTranslation'))
   ],document.body);
   
@@ -46,21 +46,21 @@ Back in the day only one of these addEventListener would work
 Create element is backward compatible and accounts for 
 this issue!
 
-  Cr.elm('div',{'event':['click':doSomething]},[
+  Cr.elm('div',{'event':['click',doSomething]},[
     Cr.txt('link text')
   ],document.body);
 
 The event is only added after the node is appended...
 You may also do this
 
-  var d = Cr.elm('div',{'event':['click':doSomething]},[
+  var d = Cr.elm('div',{'event':['click',doSomething]},[
     Cr.txt('link text')
   ]);
   Cr.insertNode(d, document.body);
 
 Or an even more traditional approach
 
-  var d = Cr.elm('div',{'event':['click':doSomething]},[
+  var d = Cr.elm('div',{'event':['click',doSomething]},[
     Cr.txt('link text')
   ]);
   document.body.appendChild(d);
@@ -73,6 +73,12 @@ and only apply to dated web browsers.
 Events are not added until the elements are
 appended to the DOM tree.  The 3 ways to do this
 are illustrated above :D
+
+The key 'event' is interchangeable with 'events'
+and can be an array of arrays instead of just one.
+
+If you really must attach events earlier (before appending to the tree)
+use loadevents instead of events
 
 License - - - - - - - - - - - - - - - - - - - - - - - - - - -
 You can use this in your projects.  There are no guarantees.
