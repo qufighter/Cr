@@ -58,6 +58,7 @@ Cr.nodeToCrJavascriptObject = function(node,oneline,removeWhitespace,whitespaceR
 	},node,oneline,removeWhitespace,whitespaceReplaceWith)
 };
 /* internal use only */
+Cr.__reservedWords = {"break":1,"else":1,"new":1,"var":1,"case":1,"finally":1,"return":1,"void":1,"catch":1,"for":1,"switch":1,"while":1,"continue":1,"function":1,"this":1,"with":1,"default":1,"if":1,"throw":1,"delete":1,"in":1,"try":1,"do":1,"instanceof":1,"typeof":1,"abstract":1,"enum":1,"int":1,"short":1,"boolean":1,"export":1,"interface":1,"static":1,"byte":1,"extends":1,"long":1,"super":1,"char":1,"final":1,"native":1,"synchronized":1,"class":1,"float":1,"package":1,"throws":1,"const":1,"goto":1,"private":1,"transient":1,"debugger":1,"implements":1,"protected":1,"volatile":1,"double":1,"import":1,"public":1,"null":1,"true":1,"false":1};
 Cr.__performConversionFromHTML = function(opt,html,oneline,removeWhitespace,whitespaceReplaceWith){
 	var dv=document.createElement('div');
 	dv.innerHTML=html;
@@ -102,17 +103,20 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 			var indent='';
 			if(!oneline)for(var d=0;d<depth;d++) indent+=tab;
 			if(cn[i].nodeType == 1){
-				js+=indent+opt.e+'"'+cn[i].localName+'"';
+				js+=indent+opt.e+'"'+cn[i].nodeName.toLowerCase()+'"';
 				if(cn[i].attributes.length > 0 || cn[i].childNodes.length > 0 || depth==0){
 					js+=',{';
 					if(cn[i].attributes.length > 0){
 						var events='';
 						for( var a=0;a<cn[i].attributes.length;a++ ){
 							var artib=cn[i].attributes[a];
+							var origExtraQuotes=extraQuotes;
+							if(Cr.__reservedWords[artib.nodeName])extraQuotes='"';
 							if(artib.nodeName.substr(0,2)=='on'){
 								events+='["'+artib.nodeName.substr(2)+'",'+extraQuotes+artib.nodeValue.substr(0,artib.nodeValue.indexOf('('))+extraQuotes+']';
 							}else
 								js+=extraQuotes+artib.nodeName+extraQuotes+':"'+artib.nodeValue+'",';
+							extraQuotes=origExtraQuotes;
 						}
 						if(events.length > 0){
 							js+=extraQuotes+'events'+extraQuotes+':['+events+'],';
@@ -136,13 +140,16 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 				var tx=cn[i].nodeValue;
 				if(removeWhitespace && tx !=' '){
 					tx=tx.replace(/^\s+|\s+$/g, whitespaceReplaceWith);
+					tx=tx.replace(/\n/g,'').replace(/\r/g,'');
 				}else
 					tx=tx.replace(/\n/g,quo_newline).replace(/\r/g,'');
-				
+
 				tx=tx.replace(/\t/g,quo_tabs);
-				
+
 				tx=tx.replace(/\\/g,esc);
-				
+
+				tx=tx.replace(/"/g,esc+'"');
+
 				if(tx.length > 0)
 					js+=indent+opt.t+'"'+tx+'"'+opt.n+','+newline;
 			}
