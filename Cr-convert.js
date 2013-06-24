@@ -33,8 +33,7 @@ Cr.nodeToCrJavascript = function(node,oneline,removeWhitespace,whitespaceReplace
 		e:'Cr.elm(',//element node begining
 		t:'Cr.txt(',//text node begining
 		n:')',		//node end
-		q:false,	//extra quotes
-		s:false		//escape newlines
+		q:false	 	//extra quotes
 	},node,oneline,removeWhitespace,whitespaceReplaceWith)
 };
 
@@ -43,8 +42,7 @@ Cr.nodeToCrJSON = function(node,oneline,removeWhitespace,whitespaceReplaceWith){
 		e:'{"elm":[',
 		t:'{"txt":[',
 		n:']}',
-		q:true,
-		s:true
+		q:true
 	},node,oneline,removeWhitespace,whitespaceReplaceWith)
 };
 
@@ -53,8 +51,7 @@ Cr.nodeToCrJavascriptObject = function(node,oneline,removeWhitespace,whitespaceR
 		e:'{elm:[',
 		t:'{txt:[',
 		n:']}',
-		q:false,
-		s:false
+		q:false
 	},node,oneline,removeWhitespace,whitespaceReplaceWith)
 };
 /* internal use only */
@@ -87,11 +84,6 @@ Cr.__performConversionFromNodeChildren = function(opt,node,oneline,removeWhitesp
 	}
 	if(opt.q){
 		extraQuotes='"';
-	}
-	if(opt.s){
-		//quo_newline='\\\\n';
-		//quo_tabs='\\\\t';
-		esc='\\\\';
 	}
 	if(removeWhitespace){
 		if(typeof(whitespaceReplaceWith)=='undefined')whitespaceReplaceWith='';
