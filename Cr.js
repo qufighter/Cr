@@ -187,10 +187,14 @@ var Cr = {
 	addListeners : function(){
 		for( i in this.pendingListenrs ){
 			for( z in this.pendingListenrs[i][1]){
+				//if(this.pendingListenrs[i][0] && this.pendingListenrs[i][1][z][1])//if element && function exist...
 				this.registerEventListener(this.pendingListenrs[i][0],this.pendingListenrs[i][1][z][0],this.pendingListenrs[i][1][z][1],this.pendingListenrs[i][1][z][2]?this.pendingListenrs[i][1][z][2]:false);
 			}
 		}
 		this.pendingListenrs=[]
+	},
+	empty : function(node){
+		while(node.lastChild)node.removeChild(node.lastChild);
 	},
 	registerEventListener : function(element,type,func,capture){//extrapolated from Tim Taylor's cevents
 		if(typeof(element.addEventListener)=='function'){
