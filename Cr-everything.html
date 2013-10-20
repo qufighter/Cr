@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="Cr.js"></script>
+<script type="text/javascript">
+	var head = document.getElementsByTagName('head')[0] || Cr.elm('head',{},[],document.documentElement);
+	var body = document.body || Cr.elm('body',{},[],document.documentElement);
+	
+	Cr.elm('title',{},[
+		Cr.txt('My Great Website Title')
+	],head)
+	
+	Cr.elm('h1',{style:'color:red;'},[
+		Cr.ent('My Great Website &amp; Wonderful Title')
+	],body)
+	
+	Cr.elm('button',{style:'border:1px solid black;border-radius:3px;',events:['click',function(){alert('hi')}]},[
+		Cr.ent('clickme')
+	],body)
+	
+	document.addEventListener('DOMContentLoaded',function(){
+		var bodyElms=document.getElementsByTagName('body');
+		for(var b=1,l=bodyElms.length;b<l;b++){
+			bodyElms[b].parentNode.removeChild(bodyElms[b]);
+		}
+	})
+</script>
+</html>
