@@ -1,5 +1,5 @@
 //cel [create element] lib by Sam Larison -- Sam @ Vidsbee.com | cr.js | cr.elm | Cr::elm
-var Cr = {
+window.Cr = {
 /*******************************************************************************
  Usage A: 
          Cr.elm('div',{'id':'hello','event':['click',function(){alert('hi');}]},[
@@ -61,10 +61,10 @@ var Cr = {
 		if(attributes){
 			if( attributes.event || attributes.events ){
 				var lev=attributes.event || attributes.events;
-				if(typeof(lev[0])=='string') this.registerEventListener(ne,lev[0],lev[1],lev[2]);
+				if(typeof(lev[0])=='string') ne.addEventListener(lev[0],lev[1],lev[2]);
 				else if(lev.length)
 					for(z in lev)
-						this.registerEventListener(ne,lev[z][0],lev[z][1],lev[z][2]);
+						ne.addEventListener(lev[z][0],lev[z][1],lev[z][2]);
 			}
 		}
 		for( i in attributes ){
@@ -123,17 +123,6 @@ var Cr = {
 	empty : function(node){
 		while(node.lastChild)node.removeChild(node.lastChild);
 	},
-	registerEventListener : function(element,type,func,capture){//extrapolated from Tim Taylor's cevents
-		if(typeof(element.addEventListener)=='function'){
-			element.addEventListener(type,func,capture);
-		}else if (element.attachEvent){
-			if(!element._listeners) element._listeners=[];
-			if(!element._listeners[type]) element._listeners[type]=[];
-			var workaroundFunc=function(){func.apply(element,[])};
-			element._listeners[type][func]=workaroundFunc;
-			element.attachEvent('on'+type,workaroundFunc);
-		}
-	},
 	unescapeHtml : function(str) { //trick used to make HTMLentiites work inside textNodes
 		if(str.length < 1)return str;
 		var temp = document.createElement("div");
@@ -142,7 +131,5 @@ var Cr = {
 		var result = temp.childNodes[0].nodeValue;
 		this.empty(temp);
 		return result;
-	},
-	pendingListenrs : []
+	}
 }
-//var CR=Cr;
