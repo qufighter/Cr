@@ -57,14 +57,14 @@ window.Cr = {
           Cr.elm('div',{},[],document.body);
 *******************************************************************************/
 	elm : function(nodeType,attributes,addchilds,appnedTo){
-		var ne=document.createElement(nodeType);
+		var ne=document.createElement(nodeType),i,l;
 		if(attributes){
 			if( attributes.event || attributes.events ){
 				var lev=attributes.event || attributes.events;
 				if(typeof(lev[0])=='string') ne.addEventListener(lev[0],lev[1],lev[2]);
 				else if(lev.length)
-					for(z in lev)
-						ne.addEventListener(lev[z][0],lev[z][1],lev[z][2]);
+					for(i=0,l=lev.length;i<l;i++)
+						ne.addEventListener(lev[i][0],lev[i][1],lev[i][2]);
 			}
 		}
 		for( i in attributes ){
