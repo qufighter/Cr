@@ -1,5 +1,5 @@
 //cel [create element] lib by Sam Larison -- Sam @ Vidsbee.com | cr.js | cr.elm | Cr::elm
-var Cr = {
+window.Cr = {
 	delayedListeners : true,//use an array of loadevents:[] for early attachment
 /*******************************************************************************
  Usage A: 
@@ -68,7 +68,7 @@ var Cr = {
           Cr.elm(' text node',{},[],document.body);
 *******************************************************************************/
 	elm : function(nodeType,attributes,addchilds,appnedTo){
-		var ne;
+		var ne,i,l;
 		if( nodeType.length < 1 || nodeType.indexOf(' ') > -1 ||  nodeType.indexOf('&') > -1 || nodeType.indexOf('%') > -1 ){
 			ne=document.createTextNode(this.unescapeHtml(nodeType.replace(/^\s+/,""))); //ltrim
 			if(!attributes && !addchilds && appnedTo){
@@ -87,8 +87,8 @@ var Cr = {
 				var lev=attributes.loadevent || attributes.loadevents;
 				if(typeof(lev[0])=='string') this.registerEventListener(ne,lev[0],lev[1],lev[2]);
 				else if(lev.length)
-					for(z in lev)
-						this.registerEventListener(ne,lev[z][0],lev[z][1],lev[z][2]);
+					for(i=0,l=lev.length;i<l;i++)
+						this.registerEventListener(ne,lev[i][0],lev[i][1],lev[i][2]);
 			}
 			if( attributes.event || attributes.events ){
 				var lev=attributes.event || attributes.events;
@@ -98,8 +98,8 @@ var Cr = {
 				}else{
 					if(typeof(lev[0])=='string') this.registerEventListener(ne,lev[0],lev[1],lev[2]);
 					else if(lev.length)
-						for(z in lev)
-							this.registerEventListener(ne,lev[z][0],lev[z][1],lev[z][2]);
+						for(i=0,l=lev.length;i<l;i++)
+							this.registerEventListener(ne,lev[i][0],lev[i][1],lev[i][2]);
 				}
 			}
 		}
@@ -217,4 +217,3 @@ var Cr = {
 	},
 	pendingListenrs : []
 }
-//var CR=Cr;
