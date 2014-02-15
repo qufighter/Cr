@@ -1,4 +1,5 @@
-//cel [create element] lib by Sam Larison -- Sam @ Vidsbee.com | cr.js | cr.elm | Cr::elm
+// Cr.elm [create element] by Sam Larison -- Sam @ Vidsbee.com -- Cr.js
+// https://github.com/qufighter/Cr
 window.Cr = {
 /*******************************************************************************
  Usage A: 
