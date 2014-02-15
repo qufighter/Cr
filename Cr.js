@@ -14,7 +14,7 @@ window.Cr = {
          ]);
          
          document.body.appendChild(myelm);
-            OR
+            O R
          Cr.insertNode(myelm, document.body);
          
  Creates:
@@ -38,16 +38,9 @@ window.Cr = {
    attributes an object {} that contains attributes.  Once special attribute 
           'events' may be used to specify events as follows:
           {'href':'#','events':[['mouseover',callfn,false],['mouseout',callfn2]]}
-          to ensure these listeners are attached see appendTo below.
           the format for events is [eventType,callback,useCapture], you may also 
-          specify a single event.  See appendTo below for event attachment info
+          specify a single event.
           
-          'loadevents' may be used to specify early attach events as follows:
-          {'loadevents':[['load',loadedFn,false],['load',loadedFn2]],'src':'img.png'}
-          load events are attached immediately in the order they are processed.  If
-          you wish load events to be attached before src is defiend to counter an IE
-          but where cached images load event fires immediately, 
-          then sepecify loadevents before src
    addchilds an array [] containing nodes to be appended as children, could contain
           an array of calls to Cr.elm which create this array of nodes.
    appnedTo should ONLY be specified on the last element that needs to be created
