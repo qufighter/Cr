@@ -43,7 +43,7 @@ Back in the day only one of these addEventListener would work
  document.body.appendChild(t);
 +d.addEventListener('click',doSomething);
 
-Create element is backward compatible and accounts for 
+Cr-legacy.js is backward compatible and accounts for 
 this issue!
 
   Cr.elm('div',{'event':['click',doSomething]},[

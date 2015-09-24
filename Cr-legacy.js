@@ -169,7 +169,7 @@ window.Cr = {
 		if(!skipListeners)this.addListeners();
 	},
 	insertNodes : function(newNodes, parentElem, optionalInsertBefore){
-		if(typeof(newNodes)!='array')
+		if(newNodes.nodeType)
 			this.insertNode(newNodes, parentElem, optionalInsertBefore);
 		else{
 			for(var i=0,l=newNodes.length;i<l;i++){
@@ -216,4 +216,4 @@ window.Cr = {
     return result;
 	},
 	pendingListenrs : []
-}
+};
