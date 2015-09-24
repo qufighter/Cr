@@ -1,6 +1,6 @@
 // Cr.elm [create element] by Sam Larison -- Sam @ Vidsbee.com -- Cr.js
 // https://github.com/qufighter/Cr
-window.Cr = {
+var Cr = {
 /*******************************************************************************
  Usage A: 
          Cr.elm('div',{'id':'hello','event':['click',function(){alert('hi');}]},[
@@ -106,7 +106,7 @@ window.Cr = {
 		}
 	},
 	insertNodes : function(newNodes, parentElem, optionalInsertBefore){
-		if(typeof(newNodes)!='array')
+		if(newNodes.nodeType)
 			this.insertNode(newNodes, parentElem, optionalInsertBefore);
 		else{
 			for(var i=0,l=newNodes.length;i<l;i++){
@@ -126,4 +126,7 @@ window.Cr = {
 		this.empty(temp);
 		return result;
 	}
-}
+};
+
+//if( typeof(window) != 'undefined' ) window.Cr = Cr;
+//if( typeof(module) != 'undefined' ) module.exports = Cr;
