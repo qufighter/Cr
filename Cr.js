@@ -7,30 +7,30 @@ var Cr = {
            Cr.txt('text inside block element'),
            Cr.elm('hr',{'style':'clear:both;'})
          ],document.body);
-         
+
  Usage B: 
          var myelm = Cr.elm('div',{'id':'hello','event':['click',function(){alert('hi');}]},[
            Cr.txt('text inside block element'),
            Cr.elm('hr',{'style':'clear:both;'})
          ]);
-         
+
          document.body.appendChild(myelm);
             O R
          Cr.insertNode(myelm, document.body);
-         
+
  Creates:
          <div id="hello">
            text inside block element
            <hr style="clear:both;">
          </div>
-         
+
          Where clicking the text or hr displays 'hi'
-         
+
  Pattern:
          Cr.elm('div',{'attribute':'one'},[Cr.txt('children')],document.body);
-         
+
          <body><div attribute="one">children</div></body>
-         
+
    Conclusions: you may nest Cr.elm calls in exactly the same way 
                 as you would nest HTML elements.
  Parameters: 
@@ -49,7 +49,7 @@ var Cr = {
             Cr.event('mouseover',callfn,true),
             Cr.evt(['mouseout',callfn2])
           )}
-          
+
    addchilds, an array [] containing nodes to be appended as children, could be
           an array of calls to Cr.elm which create this array of nodes.
    appnedTo) should ONLY be specified on the last element that needs to be created
