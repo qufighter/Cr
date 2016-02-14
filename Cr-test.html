@@ -261,5 +261,34 @@ var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('legacyevents
       });
 </script>
 
+
+
+<script type="text/javascript">
+
+var redOnMouseOver=function(ev){
+	ev.target.style.color='red';
+}
+
+Cr.elm('div',{
+	style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
+	title: "About: childNodes as an attribute.",
+	childNodes:[
+		Cr.txt('If you would rather specify childNodes as an attribute, '),
+		Cr.txt('which provides some more readable nesting options, this is also now supported.  '),
+		Cr.elm('br'),
+		Cr.elm('span',{
+			style: 'color:black;cursor:crosshair;',
+			events: Cr.events(
+				Cr.event('mouseover',redOnMouseOver),
+				Cr.event('mouseout',function(ev){ev.target.style.color='black';})
+			),
+			childNodes:[
+				Cr.txt('When doing so, the third argument must be omitted.  Please see how this statement is generated')
+			]
+		})
+	]
+},document.body);
+</script>
+
 </body>
 </html>
