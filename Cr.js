@@ -2,13 +2,13 @@
 // https://github.com/qufighter/Cr
 var Cr = {
 /*******************************************************************************
- Usage A: 
+ Usage A:
          Cr.elm('div',{'id':'hello','event':['click',function(){alert('hi');}]},[
            Cr.txt('text inside block element'),
            Cr.elm('hr',{'style':'clear:both;'})
          ],document.body);
 
- Usage B: 
+ Usage B:
          var myelm = Cr.elm('div',{'id':'hello','event':['click',function(){alert('hi');}]},[
            Cr.txt('text inside block element'),
            Cr.elm('hr',{'style':'clear:both;'})
@@ -31,16 +31,16 @@ var Cr = {
 
          <body><div attribute="one">children</div></body>
 
-   Conclusions: you may nest Cr.elm calls in exactly the same way 
+   Conclusions: you may nest Cr.elm calls in exactly the same way
                 as you would nest HTML elements.
- Parameters: 
+ Parameters:
    (nodeType,
           node type such as 'img' 'div' or 'a'
    attributes, an object {} that contains attributes.  Special Attributes:
           'childNodes' may be used instead of the following parameter, addchilds
           'events' may be used to specify events as follows:
           {'href':'#','events':[['mouseover',callfn,false],['mouseout',callfn2]]}
-          the format for events is [eventType,callback,useCapture], you may also 
+          the format for events is [eventType,callback,useCapture], you may also
           specify a single event.
 
           to make this more readable, one may use helper functions that return these arrays
@@ -53,7 +53,7 @@ var Cr = {
    addchilds, an array [] containing nodes to be appended as children, could be
           an array of calls to Cr.elm which create this array of nodes.
    appnedTo) should ONLY be specified on the last element that needs to be created
-          which means the TOP level element (or the final parameter on the first 
+          which means the TOP level element (or the final parameter on the first
           or outter most call to cr.elm).
  Empty Patteren:
           Cr.elm('div',{},[],document.body);

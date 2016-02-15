@@ -1,0 +1,23 @@
+{
+  "name": "Cr",
+  "version": "1.0.0",
+  "description": "Create Elements",
+  "main": "Cr-node.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:qufighter/Cr.git"
+  },
+  "keywords": [
+    "createElement",
+    "HTML"
+  ],
+  "author": "Sam Larison",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/qufighter/Cr/issues"
+  },
+  "homepage": "http://vidsbee.com/Cr.elm/"
+}
