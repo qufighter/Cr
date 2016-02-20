@@ -6,9 +6,9 @@ This library is designed to make it easy to turn a static
 block of HTML into a dynamic Javascript wonderhorse.
 
 This library is great if you
-1. want to dynamically create elements in javascript
-2. wish to avoid innerHTML or document.write
-3. wish to populate node properties dynamically
+ 1. want to dynamically create elements in javascript
+ 2. wish to avoid innerHTML or document.write
+ 3. wish to populate node properties dynamically
 
 Here is what the transition looks like:
 https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644
@@ -34,10 +34,9 @@ The HTML into Cr.elm nested javascript converter
 can be found here:
   http://vidsbee.com/Cr.elm/fromhtml/
 
-### Event Listeners - - - - - - - - - - - - - - - - - - - - - - -
-History - Present
+### Event Listeners - - History - Present - - - - - - - - - - - -
 
-`Cr-legacy.js` only - delayed listener attachment is removed from `Cr.js`
+NOTE: `Cr-legacy.js` ONLY - delayed listener attachment is removed from `Cr.js`
 
 Back in the day only one of these addEventListener would work
 ```
