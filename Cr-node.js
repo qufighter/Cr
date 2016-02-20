@@ -6,9 +6,9 @@ var CrDocument = require('./DOM/Cr-document.js');
 var Cr = CrInit(null); // this init is to attempt to pin all calls to Cr.ent to Cr.txt
 Cr.ent = Cr.txt; // since server side text nodes can contain entities, while Cr.ent still works, using Cr.txt is faster
 
-// if you have other Cr extensions to run... write your own wrapper, anticipate this pattern:
-// require('./node_modules/Cr/Cr-json.js')(Cr);
-//Cr = require('./Cr-json.js')(Cr); // tested working
+// if you have other Cr extensions to run... write your own wrapper instead of using this file, anticipate this pattern:
+// require('./node_modules/Cr/Cr-json.js')(Cr); // should work with npm installation
+//Cr = require('./Cr-json.js')(Cr); // tested working (non npm)
 
 module.exports = function(doc){
 	Cr = CrInit(doc || new CrDocument());

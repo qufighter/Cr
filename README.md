@@ -70,9 +70,7 @@ Or an even more traditional approach
   document.body.appendChild(d);
   Cr.addListeners();
 ```
-These conventions are up for debate, and the
-delay of listener adding may become optional
-and only apply to dated web browsers.
+If you don't need to target IE7 or earlier, I recommend you just use `Cr.js` instead of `Cr-legacy.js`.
 
 Events are not added until the elements are
 appended to the DOM tree.  The 3 ways to do this
@@ -83,7 +81,7 @@ and can be an array of arrays instead of just one.
 
 If you really must attach events earlier 
 (before appending to the tree)
-use 'loadevents' instead of 'events'
+use 'loadevents' instead of 'events' (only available in `Cr-legacy.js` and only useful for images, see `Cr-img.js`)
 
 ### Cr Node - Server Side - - - - - - - - - - - - - - - - - - - -
 
@@ -105,8 +103,9 @@ oorr
 ```
 ##### (how to extend)
 
-If you need to use Cr-json you'll have to require it, but its missing a
-module exports and wont work nicely like it does on the web just yet.
+If you need to use `Cr-json.js` you'll have to require it.  This is the only other module besides `Cr.js` supported server side at this time.
+
+To use it, you'll likely have to implement your own version of `Cr-node.js` - See that file for recommendations.
 
 ##### (how to render)
 
