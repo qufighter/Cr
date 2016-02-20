@@ -6,9 +6,9 @@ This library is designed to make it easy to turn a static
 block of HTML into a dynamic Javascript wonderhorse.
 
 This library is great if you
-  1) want to dynamically create elements in javascript
-  2) wish to avoid innerHTML or document.write
-  3) wish to populate node properties dynamically
+1. want to dynamically create elements in javascript
+2. wish to avoid innerHTML or document.write
+3. wish to populate node properties dynamically
 
 Here is what the transition looks like:
 https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644
@@ -36,6 +36,9 @@ can be found here:
 
 ### Event Listeners - - - - - - - - - - - - - - - - - - - - - - -
 History - Present
+
+`Cr-legacy.js` only - delayed listener attachment is removed from `Cr.js`
+
 Back in the day only one of these addEventListener would work
 ```
  var d=document.createElement('a');
@@ -86,21 +89,21 @@ use 'loadevents' instead of 'events'
 ### Cr Node - Server Side - - - - - - - - - - - - - - - - - - - -
 
 (UNTESTED via NPM)
-
+```
   var Cr = require('Cr')();
   var document = Cr.doc;
-
+```
 or
-
+```
   var Cr = require('./node_modules/Cr/Cr-node.js')();
   var document = Cr.doc;
-
+```
 oorr
-
+```
   var CrDocument = require('.node_modules/Cr/DOM/Cr-document.js');
   var document = new CrDocument();
   var Cr = require('Cr')(document); // by default returns a new document
-
+```
 ##### (how to extend)
 
 If you need to use Cr-json you'll have to require it, but its missing a
@@ -109,7 +112,7 @@ module exports and wont work nicely like it does on the web just yet.
 ##### (how to render)
 
 Turns out it's a lot faster to try to re-use the same document between requests
-
+```
   var elm1 = Cr.elm('div',{class:'cssrules'},[
     Cr.elm('a',{'href':'#freshLinks'},[Cr.txt('Click Me '), Cr.ent('&nbsp;')])
   ],document.body);
@@ -133,19 +136,21 @@ Turns out it's a lot faster to try to re-use the same document between requests
   ]);
 
   document.head.appendChild(headerFrag);
-
+```
 ##### (really how to render)
-
+```
   document.html.outerHTML // witout doctype
   document.outerHTML // with doctype
-
+```
 that should give you everything except doctype declaration
 keep in mind document is not completely what you expect client side,
 it is a trimmed down version with only essential functionality for Cr
+```
 See Cr-node-example-server.js
 See Cr-node-example-server-fast.js
 See Cr-node-test.js
 See Cr-node.js to see how its initialized - this is what is required by default
+```
 
 ### License
 You can use this in your projects.  There are no guarantees.
