@@ -81,6 +81,70 @@ If you really must attach events earlier
 (before appending to the tree)
 use 'loadevents' instead of 'events'
 
+Cr Node - Server Side - - - - - - - - - - - - - - - - - - - -
+
+(UNTESTED via NPM)
+
+  var Cr = require('Cr')();
+  var document = Cr.doc;
+
+or
+
+  var Cr = require('./node_modules/Cr/Cr-node.js')();
+  var document = Cr.doc;
+
+oorr
+
+  var CrDocument = require('.node_modules/Cr/DOM/Cr-document.js');
+  var document = new CrDocument();
+  var Cr = require('Cr')(document); // by default returns a new document
+
+(how to extend)
+
+If you need to use Cr-json you'll have to require it, but its missing a
+module exports and wont work nicely like it does on the web just yet.
+
+(how to render)
+
+Turns out it's a lot faster to try to re-use the same document between requests
+
+  var elm1 = Cr.elm('div',{class:'cssrules'},[
+    Cr.elm('a',{'href':'#freshLinks'},[Cr.txt('Click Me '), Cr.ent('&nbsp;')])
+  ],document.body);
+
+  var link2 = Cr.elm('a',{'href':'#link2'},[
+    Cr.txt("You Know What to Do!"),
+    Cr.elm('br'),
+    Cr.txt("Make text")
+  ],elm1);
+
+  Cr.insertNode(link2, document.body, elm1);
+
+  Cr.elm('title',{},[
+    Cr.txt("Document Title")
+  ],document.head);
+
+  var headerFrag = Cr.frag([
+    Cr.elm("script",{src:"Cr.js"}),
+    Cr.elm("script",{src:"Cr-json.js"}),
+    Cr.elm("link",{href:"test.css", type:'text/css', rel:'stylesheet'})
+  ]);
+
+  document.head.appendChild(headerFrag);
+
+(really how to render)
+
+  document.html.outerHTML // witout doctype
+  document.outerHTML // with doctype
+
+that should give you everything except doctype declaration
+keep in mind document is not completely what you expect client side,
+it is a trimmed down version with only essential functionality for Cr
+See Cr-node-example-server.js
+See Cr-node-example-server-fast.js
+See Cr-node-test.js
+See Cr-node.js to see how its initialized - this is what is required by default
+
 License - - - - - - - - - - - - - - - - - - - - - - - - - - -
 You can use this in your projects.  There are no guarantees.
 If you make money using this then you or those who profit

@@ -1,10 +1,12 @@
-var document = require('./DOM/Cr_document.js')();
+//usage: node Cr-node-test.js
 
-var Cr = require('./Cr.js')(document);
+var CrDocument = require('./DOM/Cr-document.js');
+var document = new CrDocument();
+// var Cr = require('./Cr.js')(document);
+// Cr.ent = Cr.txt; //since server side text nodes can contain entities, while cr.ent still works, using cr.txt is faster
+var Cr = require('./Cr-node.js')(document);
 
-Cr.ent = Cr.txt; //since server side text nodes can contain entities, while cr.ent still works, using cr.txt is faster
 
-module.exports = {Cr:Cr, document:document};
 
 /**** some tests ********/
 
@@ -32,8 +34,9 @@ var headerFrag = Cr.frag([
 
 document.head.appendChild(headerFrag);
 
+document.doctype="<!DOCTYPE html>"
 
 //Cr.empty(headerFrag);
 //Cr.empty(elm1);
 
-console.log(document.html.outerHTML);
+console.log(document.outerHTML);

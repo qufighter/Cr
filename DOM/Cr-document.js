@@ -1,3 +1,5 @@
+"use strict";
+
 var Cr_fragment = function(){ // element really inherits from fragment
 	this.childNodes = [];
 	this.parentNode = false;
@@ -26,6 +28,11 @@ var Cr_fragment = function(){ // element really inherits from fragment
 				return this.childNodes.splice(n, 1);
 			}
 		}
+	};
+
+	this.cache = function(){
+		// not standard dom, caches element to html representation (text node), prevents further manipulation
+		return new Cr_text(this.__outerHTML());
 	};
 
 	this.__outerHTML = function(){
@@ -57,14 +64,14 @@ var Cr_fragment = function(){ // element really inherits from fragment
 	Object.defineProperty(this, "innerHTML",{
 		get: this.__innerHTML,
 		set: function(t){
-			this.childNodes = [document.createTextNode(t)]; // warning: global document used
+			this.childNodes = [document.createTextNode(t)]; // warning: "global" document used
 		}
 	});
 
 };
 
 
-var Cr_element = function(n){ // should probably just inherit from fragment, and override __outerHTML
+var Cr_element = function(n){ // should probably just inherit from fragment, and override __outerHTML - OR each element should just have a fragment to hold child nodes (downside being, pass through functions and properties needed to access fragment childNodes etc)
 	this.localName = n;
 	this.childNodes = [];
 	this.parentNode = false;
@@ -122,6 +129,11 @@ var Cr_element = function(n){ // should probably just inherit from fragment, and
 		}
 	};
 
+	this.cache = function(){
+		// not standard dom, caches element to html representation (text node), prevents further manipulation
+		return new Cr_text(this.__outerHTML());
+	};
+
 	this.__canInlineSlashify = function(){
 		var y = true;
 		var yesMap = {'hr':y,'br':y,'link':y,'meta':y,'input':y}
@@ -170,7 +182,7 @@ var Cr_element = function(n){ // should probably just inherit from fragment, and
 	Object.defineProperty(this, "innerHTML",{
 		get: this.__innerHTML,
 		set: function(t){
-			this.childNodes = [document.createTextNode(t)]; // warning: global document used
+			this.childNodes = [document.createTextNode(t)]; // warning: "global" document used
 		}
 	});
 
@@ -198,6 +210,7 @@ var Cr_text = function(t){
 
 
 var Cr_document = function(){
+	this.__doctype="<!DOCTYPE html>\n";
 	this.createElement = function(n){
 		return new Cr_element(n);
 	};
@@ -212,8 +225,17 @@ var Cr_document = function(){
 	this.html = this.createElement('html');
 	this.html.appendChild(this.head);
 	this.html.appendChild(this.body);
-}
+	this.__outerHTML = function(){
+		return this.__doctype+this.html.outerHTML;
+	};
+	Object.defineProperty(this, "outerHTML",{
+		get: this.__outerHTML
+	});
+	Object.defineProperty(this, "doctype",{
+		get: function(){return this.__doctype;},
+		set: function(t){this.__doctype=t?t+"\n":"";}
+	});}
 
 var document = new Cr_document();
 
-module.exports = function(){return document;};
+module.exports = Cr_document;

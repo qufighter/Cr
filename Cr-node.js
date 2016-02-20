@@ -1,13 +1,21 @@
-var document = require('./DOM/Cr_document.js')();
+"use strict";
 
-var Cr = require('./Cr.js')(document);
+var CrInit = require('./Cr.js');
+var CrDocument = require('./DOM/Cr-document.js');
 
-Cr.ent = Cr.txt; //since server side text nodes can contain entities, while cr.ent still works, using cr.txt is faster
+var Cr = CrInit(null); // this init is to attempt to pin all calls to Cr.ent to Cr.txt
+Cr.ent = Cr.txt; // since server side text nodes can contain entities, while Cr.ent still works, using Cr.txt is faster
 
-//module.exports = {Cr:Cr, document:document};
-// not sure what's best to do here... need Cr and destinations such as document.body and document.head to make elements, and document.html.outerHTML to render full output to client
-// Cr.doc does exist... Cr.doc.head and Cr.doc.body and Cr.doc.html.outerHTML can be used, so perhaps we will just
-module.exports = Cr;
+// if you have other Cr extensions to run... write your own wrapper, anticipate this pattern:
+// require('./node_modules/Cr/Cr-json.js')(Cr);
+//Cr = require('./Cr-json.js')(Cr); // tested working
 
-// If you'ure using your own document wrapper, suggest you directly import Cr in your code instead of this file, providing document for initialization:
+module.exports = function(doc){
+	Cr = CrInit(doc || new CrDocument());
+	return Cr;
+};
+
+// If you're using your own document wrapper, suggest you directly import Cr in your code instead of this file, providing document for initialization:
+// var document = new require('./node_modules/Cr/DOM/Cr-document.js');
 // var Cr = require('./node_modules/Cr/Cr.js')(document);
+// further suggest initialization outside of the request cycle, though you will probably need an empty/new document for each request.

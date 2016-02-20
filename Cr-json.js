@@ -1,4 +1,5 @@
 /* */
+if(typeof Cr == 'undefined'){var Cr = {};} // typically this should be included after Cr and it should be defined... this is for node.js, so in reality DELETE this line!  A pointless test.  We could try to fetch Cr from the global scope
 Cr.fromJsonString = function(jsonString){
 	return this.fromJsonObject( JSON.parse(jsonString) );
 };
@@ -69,3 +70,5 @@ Cr.__functionForString = function(fnName){
 	if(typeof(fnOut)!='function')fnOut=function(){};
 	return fnOut;
 };
+// more node.js stuff, delete this line if serving on the web
+if( typeof(module) != 'undefined' ) module.exports = function(RealCr){for(var p in Cr){RealCr[p]=Cr[p];};return RealCr;};
