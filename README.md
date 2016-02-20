@@ -137,11 +137,21 @@ Turns out it's a lot faster to try to re-use the same document between requests
 ```
 ##### (really how to render)
 ```
-  document.html.outerHTML // witout doctype
-  document.outerHTML // with doctype
+  document.outerHTML; // with doctype
 ```
-that should give you everything except doctype declaration
-keep in mind document is not completely what you expect client side,
+or
+```
+  document.html.outerHTML; // without doctype
+```
+or
+```
+  document.body.outerHTML; // just the body
+```
+etc.
+
+
+that should give you everything you would expect to send to the client.  You may set `document.doctype` as needed.
+keep in mind `document` is not completely what you expect client side,
 it is a trimmed down version with only essential functionality for Cr
 ```
 See Cr-node-example-server.js
