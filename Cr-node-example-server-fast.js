@@ -51,6 +51,8 @@ var headerFrag = Cr.frag([
 
 document.head.appendChild(headerFrag);
 
+//console.log(document.head.childNodes); // to see that fragments not really treated normally, see notes in Cr-document.js Cr_fragment.appendChild
+
 document.doctype="<!DOCTYPE html>" // the default doctype is <!DOCTYPE html>
 
 var bottomDiv = Cr.elm('div',{},[Cr.txt('Text from previous request')],document.body);

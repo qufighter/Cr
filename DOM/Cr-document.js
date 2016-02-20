@@ -1,12 +1,21 @@
 "use strict";
 
-var Cr_fragment = function(){ // element really inherits from fragment
+var y = true;
+var inlineSlashifiable = {'hr':y,'br':y,'link':y,'meta':y,'input':y}
+
+var Cr_fragment = function(ownerNode){
+	ownerNode = ownerNode || this; // owner node should basically never be provided except for internal usage... once the fragment is inserted however, each elements parent node could be updated
 	this.childNodes = [];
 	this.parentNode = false;
 
 	this.appendChild = function(c){
+		// c is suppose to be a node, but it could be a fragment too... since fragments render like regular HTML its not really distinguishable server side
+		// if c is a fragment.... we might do things a little differently
+		// we could append each child node in that case... since each element in the fragment will have the wrong parentNode (fragment itself)
+		// ideally if c is a fragment, we might just append the whole fragment as a single child node still, but update the parentNode on each to be ownerNode
+		// what we have now works, but traversing the hierarchy that contains fragments will not work exactly the way you would expect it to work client side at this time, since each fragment is "one node".
 		if( c.parentNode ) c.parentNode.removeChild(c);
-		c.parentNode = this;
+		c.parentNode = ownerNode;
 		this.childNodes.push(c);
 		return c;
 	};
@@ -15,7 +24,7 @@ var Cr_fragment = function(){ // element really inherits from fragment
 		for( var n=0,l=this.childNodes.length; n<l; n++ ){
 			if( this.childNodes[n] === b ){
 				if( c.parentNode ) c.parentNode.removeChild(c);
-				c.parentNode = this;
+				c.parentNode = ownerNode;
 				this.childNodes.splice(n, 0, c);
 				return c;
 			}
@@ -71,10 +80,11 @@ var Cr_fragment = function(){ // element really inherits from fragment
 };
 
 
-var Cr_element = function(n){ // should probably just inherit from fragment, and override __outerHTML - OR each element should just have a fragment to hold child nodes (downside being, pass through functions and properties needed to access fragment childNodes etc)
+var Cr_element = function(n){
 	this.localName = n;
-	this.childNodes = [];
-	this.parentNode = false;
+	this.__fragment = new Cr_fragment(this); // the fragment contains all the child nodes... several node properties exist on the fragment for convenience
+	this.childNodes = this.__fragment.childNodes;
+	this.parentNode = this.__fragment.parentNode;
 	this.attributeMap = {};
 
 	this.setAttribute = function(key, val){
@@ -103,41 +113,18 @@ var Cr_element = function(n){ // should probably just inherit from fragment, and
 		}
 	};
 
-	this.appendChild = function(c){
-		if( c.parentNode ) c.parentNode.removeChild(c);
-		c.parentNode = this;
-		this.childNodes.push(c);
-		return c;
-	};
+	this.appendChild = this.__fragment.appendChild;
 
-	this.insertBefore = function(c,b){
-		for( var n=0,l=this.childNodes.length; n<l; n++ ){
-			if( this.childNodes[n] === b ){
-				if( c.parentNode ) c.parentNode.removeChild(c);
-				c.parentNode = this;
-				this.childNodes.splice(n, 0, c);
-				return c;
-			}
-		}
-	};
+	this.insertBefore = this.__fragment.insertBefore;
 
-	this.removeChild = function(c){
-		for( var n=0,l=this.childNodes.length; n<l; n++ ){
-			if( this.childNodes[n] === c ){
-				return this.childNodes.splice(n, 1);
-			}
-		}
-	};
+	this.removeChild = this.__fragment.removeChild;
 
-	this.cache = function(){
-		// not standard dom, caches element to html representation (text node), prevents further manipulation
-		return new Cr_text(this.__outerHTML());
-	};
+	this.__innerHTML = this.__fragment.__innerHTML;
+
+	this.cache = this.__fragment.cache;
 
 	this.__canInlineSlashify = function(){
-		var y = true;
-		var yesMap = {'hr':y,'br':y,'link':y,'meta':y,'input':y}
-		return yesMap[this.localName];
+		return inlineSlashifiable[this.localName];
 	};
 
 	this.__attribHTML = function(){
@@ -157,15 +144,7 @@ var Cr_element = function(n){ // should probably just inherit from fragment, and
 		return '<' + this.localName + this.__attribHTML() + '>' + insideHtml + '</' + this.localName + '>';
 	};
 
-	this.__innerHTML = function(){
-		var childHtml = '';
-		for( var n=0,l=this.childNodes.length; n<l; n++ ){
-			childHtml+=this.childNodes[n].__outerHTML();
-		}
-		return childHtml;
-	}
-
-	Object.defineProperty(this, "lastChild",{
+	Object.defineProperty(this, "lastChild",{ // todo, explore how to link this up with fragment better, where this is already defined
 		get: function() {
 			return this.childNodes[this.childNodes.length-1];
 		}
@@ -232,7 +211,7 @@ var Cr_document = function(){
 		get: this.__outerHTML
 	});
 	Object.defineProperty(this, "doctype",{
-		get: function(){return this.__doctype;},
+		get: function(){return this.__doctype.replace(/\n$/,'');},
 		set: function(t){this.__doctype=t?t+"\n":"";}
 	});}
 
