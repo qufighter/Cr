@@ -56,6 +56,10 @@ var Cr_fragment = function(ownerNode){
 		return childHtml;
 	}
 
+	this.__empty = function(){
+		while(this.lastChild) this.removeChild(this.lastChild);
+	}
+
 	Object.defineProperty(this, "lastChild",{
 		get: function() {
 			return this.childNodes[this.childNodes.length-1];
@@ -73,7 +77,8 @@ var Cr_fragment = function(ownerNode){
 	Object.defineProperty(this, "innerHTML",{
 		get: this.__innerHTML,
 		set: function(t){
-			this.childNodes = [document.createTextNode(t)]; // warning: "global" document used
+			this.__empty();
+			this.appendChild(new Cr_text(t));
 		}
 	});
 
@@ -121,6 +126,8 @@ var Cr_element = function(n){
 
 	this.__innerHTML = this.__fragment.__innerHTML;
 
+	this.__empty = this.__fragment.__empty;
+
 	this.cache = this.__fragment.cache;
 
 	this.__canInlineSlashify = function(){
@@ -144,26 +151,13 @@ var Cr_element = function(n){
 		return '<' + this.localName + this.__attribHTML() + '>' + insideHtml + '</' + this.localName + '>';
 	};
 
-	Object.defineProperty(this, "lastChild",{ // todo, explore how to link this up with fragment better, where this is already defined
-		get: function() {
-			return this.childNodes[this.childNodes.length-1];
-		}
-	});
+	Object.defineProperty(this, "lastChild", Object.getOwnPropertyDescriptor(this.__fragment, 'lastChild'));
 
-	Object.defineProperty(this, "nodeValue",{
-		get: this.__innerHTML
-	});
+	Object.defineProperty(this, "nodeValue", Object.getOwnPropertyDescriptor(this.__fragment, 'nodeValue'));
 
-	Object.defineProperty(this, "outerHTML",{
-		get: this.__outerHTML
-	});
+	Object.defineProperty(this, "outerHTML", Object.getOwnPropertyDescriptor(this.__fragment, 'outerHTML'));
 
-	Object.defineProperty(this, "innerHTML",{
-		get: this.__innerHTML,
-		set: function(t){
-			this.childNodes = [document.createTextNode(t)]; // warning: "global" document used
-		}
-	});
+	Object.defineProperty(this, "innerHTML", Object.getOwnPropertyDescriptor(this.__fragment, 'innerHTML'));
 
 };
 
@@ -174,17 +168,21 @@ var Cr_text = function(t){
 		return this.text;
 	};
 
+	this.__setText = function(t){ this.text=t; }
+
 	Object.defineProperty(this, "outerHTML",{
-		get: this.__outerHTML
+		get: this.__outerHTML,
+		set: this.__setText
 	});
 
 	Object.defineProperty(this, "innerHTML",{
-		get: this.__outerHTML
+		get: this.__outerHTML,
+		set: this.__setText
 	});
 
 	Object.defineProperty(this, "nodeValue",{
 		get: this.__outerHTML,
-		set: function(t){ this.text=t; }
+		set: this.__setText
 	});
 };
 
@@ -214,8 +212,7 @@ var Cr_document = function(){
 	Object.defineProperty(this, "doctype",{
 		get: function(){return this.__doctype.replace(/\n$/,'');},
 		set: function(t){this.__doctype=t?t+"\n":"";}
-	});}
-
-var document = new Cr_document();
+	});
+}
 
 module.exports = Cr_document;

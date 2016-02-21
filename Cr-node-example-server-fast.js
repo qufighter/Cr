@@ -75,9 +75,9 @@ function handleRequest(request, response){
 
 	//topSpan.innerHTML = request.url + " hello there"; //or simply this
 
-	topSpan.attributes.style="color:green;"
-
 	topTextNode.nodeValue=request.url;
+
+	topSpan.attributes.style="color:green;"
 
 	// setTimeout(function(){
 	// 	Cr.elm('div',{},[Cr.txt('Rogue Thread: ' + request.url)],document.body); // just to prove how it works
