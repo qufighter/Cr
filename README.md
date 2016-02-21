@@ -85,7 +85,6 @@ use 'loadevents' instead of 'events' (only available in `Cr-legacy.js` and only 
 
 ### Cr Node - Server Side - - - - - - - - - - - - - - - - - - - -
 
-(UNTESTED via NPM)
 ```
   var Cr = require('create-elements')();
   var document = Cr.doc;
@@ -101,6 +100,12 @@ oorr
   var document = new CrDocument();
   var Cr = require('create-elements')(document); // by default returns a new document
 ```
+ooorrr
+```
+  var document = new (require('./node_modules/create-elements/DOM/Cr-document.js'));
+  var Cr = require('create-elements')(document);
+```
+
 ##### (how to extend)
 
 If you need to use `Cr-json.js` you'll have to require it.  This is the only other module besides `Cr.js` supported server side at this time.
