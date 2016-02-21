@@ -85,14 +85,14 @@ var Cr_element = function(n){
 	this.__fragment = new Cr_fragment(this); // the fragment contains all the child nodes... several node properties exist on the fragment for convenience
 	this.childNodes = this.__fragment.childNodes;
 	this.parentNode = this.__fragment.parentNode;
-	this.attributeMap = {};
+	this.attributes = {};
 
 	this.setAttribute = function(key, val){
-		this.attributeMap[key] = val;
+		this.attributes[key] = val;
 	};
 
 	this.getAttribute = function(key){
-		return this.attributeMap[key];
+		return this.attributes[key];
 	};
 
 	this.addEventListener = function(event, listener, captrue){
@@ -129,8 +129,8 @@ var Cr_element = function(n){
 
 	this.__attribHTML = function(){
 		var o = [];
-		for( var k in this.attributeMap ){
-			o.push(k+'="'+this.attributeMap[k]+'"')
+		for( var k in this.attributes ){
+			o.push(k+'="'+this.attributes[k]+'"')
 		}
 		if( o.length ) return ' '+o.join(' ');
 		return '';
@@ -183,7 +183,8 @@ var Cr_text = function(t){
 	});
 
 	Object.defineProperty(this, "nodeValue",{
-		get: this.__outerHTML
+		get: this.__outerHTML,
+		set: function(t){ this.text=t; }
 	});
 };
 

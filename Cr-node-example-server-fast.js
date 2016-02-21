@@ -19,11 +19,12 @@ function fullTime(startTime){
 }
 
 // for "fast mode" we will create the document once and share between requests
-var Cr = require('./Cr-node.js')(); // you may just require('Cr') - handled by Cr-node.js
+var Cr = require('./Cr-node.js')(); // you may just require('create-elements')() - handled by Cr-node.js
 var document = Cr.doc;
 
 // keep references to any element you need to interact with.  there is no document.getElementById or anything that will bloat Cr-document - though the case for expanding certain features, like cloneNode is strong.
-var topSpan = Cr.elm('span',{'id':'pathHit1'});
+var topTextNode = Cr.txt();
+var topSpan = Cr.elm('span',{'id':'pathHit1'},[topTextNode]);
 
 Cr.elm('div',{},[Cr.txt('It Works!! Path Hit: '),topSpan],document.body);
 
@@ -55,7 +56,8 @@ document.head.appendChild(headerFrag);
 
 document.doctype="<!DOCTYPE html>" // the default doctype is <!DOCTYPE html>
 
-var bottomDiv = Cr.elm('div',{},[Cr.txt('Text from previous request')],document.body);
+var bottomDivText = Cr.txt('Text from previous request');
+var bottomDiv = Cr.elm('div',{},[bottomDivText],document.body);
 
 
 
@@ -68,9 +70,14 @@ function handleRequest(request, response){
 	// unlike normal mode which starts with a fresh document,
 	// first you may want to clone the document... a regular object clone should work... as long as you interact with the document synchronously and render it in one step, it should be relatively safe to modify
 
-	Cr.empty(topSpan);
-	Cr.insertNode(Cr.txt(request.url), topSpan)
+	// Cr.empty(topSpan);
+	// Cr.insertNode(Cr.txt(request.url), topSpan);
+
 	//topSpan.innerHTML = request.url + " hello there"; //or simply this
+
+	topSpan.attributes.style="color:green;"
+
+	topTextNode.nodeValue=request.url;
 
 	// setTimeout(function(){
 	// 	Cr.elm('div',{},[Cr.txt('Rogue Thread: ' + request.url)],document.body); // just to prove how it works
@@ -83,16 +90,16 @@ function handleRequest(request, response){
 
 	//setTimeout(function(){
 
-		Cr.empty(bottomDiv);
-		Cr.insertNode(Cr.txt('It Works!! Path Hit: ' + request.url), bottomDiv)
+		//Cr.empty(bottomDiv);
+		//Cr.insertNode(Cr.txt('It Works!! Path Hit: ' + request.url), bottomDiv)
+
+		bottomDivText.nodeValue = 'It Works!! Path Hit: ' + request.url
 
 		//startTime = fullTime(startTime);
 
-		// The easy way to get the entire document's HTML - TODO: doctype support
 		response.end(document.outerHTML);
 
 		//fullTime(startTime);
-		// todo: time render
 	//},5)
 }
 

@@ -87,19 +87,19 @@ use 'loadevents' instead of 'events' (only available in `Cr-legacy.js` and only 
 
 (UNTESTED via NPM)
 ```
-  var Cr = require('Cr')();
+  var Cr = require('create-elements')();
   var document = Cr.doc;
 ```
 or
 ```
-  var Cr = require('./node_modules/Cr/Cr-node.js')();
+  var Cr = require('./node_modules/create-elements/Cr-node.js')();
   var document = Cr.doc;
 ```
 oorr
 ```
-  var CrDocument = require('.node_modules/Cr/DOM/Cr-document.js');
+  var CrDocument = require('./node_modules/create-elements/DOM/Cr-document.js');
   var document = new CrDocument();
-  var Cr = require('Cr')(document); // by default returns a new document
+  var Cr = require('create-elements')(document); // by default returns a new document
 ```
 ##### (how to extend)
 

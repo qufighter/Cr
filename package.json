@@ -1,6 +1,6 @@
 {
-  "name": "Cr",
-  "version": "1.0.0",
+  "name": "create-elements",
+  "version": "1.0.1",
   "description": "Create Elements",
   "main": "Cr-node.js",
   "scripts": {

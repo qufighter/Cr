@@ -24,7 +24,7 @@ function handleRequest(request, response){
 	if( request.url != '/' ){response.end("EOF");return;}
 	//var startTime = process.hrtime();
 
-	var Cr = require('./Cr-node.js')(); // you may just require('Cr') - handled by Cr-node.js
+	var Cr = require('./Cr-node.js')(); // you may just require('create-elements')() - handled by Cr-node.js
 	var document = Cr.doc; // Cr is somewhat static, for normal duration of use (render time), the document will be available here.
 	// Cr only uses its internal this.doc.body as a default/fallback if at all, otherwise only uses create node functions
 	// you may provide your own document when you require Cr
@@ -66,7 +66,6 @@ function handleRequest(request, response){
 		//startTime = fullTime(startTime);
 
 
-		// The easy way to get the entire document's HTML - TODO: doctype support
 		response.end(document.outerHTML);
 
 
