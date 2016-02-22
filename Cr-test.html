@@ -5,6 +5,7 @@
 textarea{width:800px;height:300px;}
 #test_nodes{border:3px dashed red;margin:10px;padding:10px;}
 #validation_buttons{display:none;}
+label{white-space:nowrap;}
 </style>
 	<script src="Cr.js"></script>
 	<script src="Cr-json.js"></script>
@@ -13,18 +14,37 @@ textarea{width:800px;height:300px;}
 		function gel(n){
 			return document.getElementById(n);
 		}
+		function getSelectedOptions(){
+			return {
+				oneline: !gel('prettyPrint').checked,
+				removeWhitespace: gel('trimWhitespaceNodes').checked,
+				whitespaceReplaceWith: gel('wsReplaceWith').value,
+				childNodeAttributes: gel('childNodeAttributes').checked,
+				quoteAllAttributes: gel('quoteAll').checked
+			};
+		}
 		function htmlToCr(){
-			gel('output').value=Cr.javascriptFromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+			gel('output').value=Cr.javascriptFromHTML(gel('toConvert').value, getSelectedOptions());
 			verifyCrJS()
 			gel('validation_buttons').style.display='none';
 		}
+		function htmlToCrSimpleJson(){
+			if(!gel('childNodeAttributes').checked){
+				if( confirm('The `ChildNodes as Attributes` option will now be checked') ){
+					gel('childNodeAttributes').checked = true;
+				}else return;
+			}
+			gel('output').value=Cr.javascriptSimpleObjectfromHTML(gel('toConvert').value, getSelectedOptions());
+			verifySimpleCrObject()
+			gel('validation_buttons').style.display='none';
+		}
 		function htmlToCrJsObj(){
-			gel('output').value=Cr.javascriptObjectfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+			gel('output').value=Cr.javascriptObjectfromHTML(gel('toConvert').value, getSelectedOptions());
 			verifyCrObject()
 			gel('validation_buttons').style.display='none';
 		}
 		function htmlToCrJson(){
-			gel('output').value=Cr.JSONfromHTML(gel('toConvert').value, !gel('prettyPrint').checked, gel('trimWhitespaceNodes').checked, gel('wsReplaceWith').value);
+			gel('output').value=Cr.JSONfromHTML(gel('toConvert').value, getSelectedOptions());
 			verifyCrJSON()
 			gel('validation_buttons').style.display='none';
 		}
@@ -34,15 +54,39 @@ textarea{width:800px;height:300px;}
 			var node=eval(gel('output').value);
 			gel('test_nodes').appendChild(node);
 		}
+		function verifySimpleCrObject(){
+			gel('test_nodes').innerHTML='';
+			eval('var node='+gel('output').value+';');
+			//Cr.insertNodes(Cr.fromSimpleJson(node),gel('test_nodes'));
+			Cr.insertNodes(Cr.fromJson(node),gel('test_nodes'));
+		}
 		function verifyCrObject(){
 			gel('test_nodes').innerHTML='';
 			eval('var node='+gel('output').value+';');
-			Cr.insertNodes(Cr.fromJsonObject(node),gel('test_nodes'));
+			//Cr.insertNodes(Cr.fromJsonObject(node),gel('test_nodes'));
+			Cr.insertNodes(Cr.fromJson(node),gel('test_nodes'));
 		}
 		function verifyCrJSON(){
 			gel('test_nodes').innerHTML='';
 			var node=Cr.fromJsonString(gel('output').value);
 			Cr.insertNodes(node,gel('test_nodes'));
+		}
+
+		function click_verifyCrJS(){
+			verifyCrJS();
+		}
+		function click_verifySimpleCrObject(){
+			verifySimpleCrObject();
+		}
+		function click_verifyCrObject(){
+			verifyCrObject();
+		}
+		function click_verifyCrJSON(){
+			verifyCrJSON();
+		}
+
+		function captureRenderedHtmlToInput(){
+			gel('toConvert').value = gel('test_nodes').innerHTML;
 		}
 
 		function unlockValidationButtons(){
@@ -66,7 +110,7 @@ textarea{width:800px;height:300px;}
 	thus appending all of the nodes at once and generating fewer events and CPU stress!<br/>
 	</small><br/>	
 	Input HTML<br/>
-		<textarea onmouseover="this.select()" id="toConvert">&lt;div&gt;&lt;h1&gt;Cr.elm - innerHTML be Gone!&lt;/h1&gt;
+		<textarea onmouseover="this.select()" id="toConvert">&lt;div style="color:black;"&gt;&lt;h1&gt;Cr.elm - innerHTML be Gone!&lt;/h1&gt;
 
 &lt;img src="../Cr.png" onclick="clickFunctionTest()" class="ie reserved word test" var="ie reserved word test" alt="Javascript CreateElement Library Cr.elm" style="float:right;height:67px;width:500px;"/&gt;
 
@@ -82,11 +126,14 @@ Instead using the elm function of the Cr library one can create and nest nodes w
 		<label><input type="checkbox" id="trimWhitespaceNodes" checked="checked"/> Trim Whitespace</label>
 		and Replace With <input type="text" id="wsReplaceWith" value="">
 		<label><input type="checkbox" id="prettyPrint" checked="checked"/> Make Tidy</label>
+		<label><input type="checkbox" id="childNodeAttributes" checked="checked"/> ChildNodes as Attributes</label>
+		<label><input type="checkbox" id="quoteAll"/> Quote All Attributes (JSON)</label>
 		<br/>
 		<input onclick="htmlToCr()" type="button" value="HTML to Cr.elm JS Function" title="Converts static HTML into dynamic javascript that can be run from a script tag, the calls to the Cr library will handle creation of nodes.  Fastest though Single Purpose." />
-		<input onclick="htmlToCrJsObj()" type="button" value="HTML to Cr.elm JS Object" title="Convert static HTML into a Javascript Object that can be parsed by Cr.fromJSObject  Not as versitile as JSON string, slower than raw Cr calls, intermediary." />
-		<input onclick="htmlToCrJson()" type="button" value="HTML to Cr.elm JSON String" title="Convert static HTML into JSON string that can be parsed by Cr.fromJSON.  Most versitile yet `slowest`" />
-		<br/>Cr Code<br/><textarea onmouseover="this.select()" id="output" onclick="unlockValidationButtons()" onkeyup="unlockValidationButtons()"></textarea><br/>
+		<input onclick="htmlToCrSimpleJson()" type="button" value="HTML to Cr.elm Simple JS Object" title="Convert static HTML into a Javascript Object that can be parsed by Cr.fromSimpleJson  Not as versitile as JSON string. `slower`" />
+		<input onclick="htmlToCrJsObj()" type="button" value="HTML to Cr.elm JS Object" title="Convert static HTML into a Javascript Object that can be parsed by Cr.fromJsonObject  Not as versitile as JSON string. `slower`" />
+		<input onclick="htmlToCrJson()" type="button" value="HTML to Cr.elm JSON String" title="Convert static HTML into JSON string that can be parsed by Cr.fromJsonString or parse it yourself and use fromJsonObject.  Most versitile yet `slowest`" />
+		<br/>Input Cr Code<br/><textarea onmouseover="this.select()" id="output" onclick="unlockValidationButtons()" onkeyup="unlockValidationButtons()"></textarea><br/>
 		
 		<div>
 <script type="text/javascript">
@@ -105,15 +152,18 @@ Instead using the elm function of the Cr library one can create and nest nodes w
 
 		<div id="test_results">
 		<span id="validation_buttons">
-<input onclick="verifyCrJS()" type="button" value="Test as Cr.elm function calls" title="Validate Cr.elm function calls" />
-<input onclick="verifyCrObject()" type="button" value="Test as Cr javascript object" title="Validate Cr Object" />
-<input onclick="verifyCrJSON()" type="button" value="Test as Cr JSON string" title="Validate Cr JSON" />
+<input onclick="click_verifyCrJS()" type="button" value="Test as Cr.elm function calls" title="Validate Cr.elm function calls" />
+<input onclick="click_verifySimpleCrObject()" type="button" value="Test as Cr simple javascript object" title="Validate Cr Object" />
+<input onclick="click_verifyCrObject()" type="button" value="Test as Cr javascript object" title="Validate Cr Object" />
+<input onclick="click_verifyCrJSON()" type="button" value="Test as Cr JSON string" title="Validate Cr JSON" />
 		</span>
 		Test Creates:</div>
 		<div id="test_nodes"></div>
 		
+<input onclick="captureRenderedHtmlToInput()" type="button" value="Capture Rendered HTML as Test Input" title="Makes the rendering above the HTML input" /><br/>
+
 			Note: Text nodes may not append correctly unless they are a child of a parent node since<br/>
-	Cr.txt never auto-appends to the DOM tree.  In these rare cases you can use Cr.elm('text content',{},[],document.body);<br/>
+	Cr.txt never auto-appends to the DOM tree.  In these rare cases you can use Cr.insertNode(Cr.txt("texr content"),document.body)<br/>
 	Although it is recommended to encase your entire block in a div anyway to save on CPU and specify destination only once.
 		</div>
 		
@@ -283,7 +333,7 @@ Cr.elm('div',{
 				Cr.event('mouseout',function(ev){ev.target.style.color='black';})
 			),
 			childNodes:[
-				Cr.txt('When doing so, the third argument must be omitted.  Please see how this statement is generated')
+				Cr.txt('When doing so, the third argument must be omitted.  Please "view source" to see how this statement is generated')
 			]
 		})
 	]

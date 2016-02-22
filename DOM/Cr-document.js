@@ -104,7 +104,7 @@ var Cr_element = function(n){
 //http://stackoverflow.com/questions/18002799/running-multiple-files-on-node-js-at-the-same-time
 //http://nodejs.org/api/modules.html
 
-		attrEvent = event.substr(0,2) == 'on';
+		var attrEvent = event.substr(0,2) == 'on';
 
 		//TO IMPLEMENT - two modes?
 		if( typeof(listener) == 'string'){

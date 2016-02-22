@@ -29,6 +29,111 @@ function handleRequest(request, response){
 	// Cr only uses its internal this.doc.body as a default/fallback if at all, otherwise only uses create node functions
 	// you may provide your own document when you require Cr
 
+	require('./Cr-json.js')(Cr);
+
+	var jsonNode = Cr.fromJsonObject(
+		{elm:[
+			"h1",{
+				//event:['click','doStuff'],   // TODO fix events from json formats too
+				style:"color:pink;",
+				childNodes:[
+					{txt:["Cr.elm - innerHTML be Gone!"]}
+				]
+			}
+			// ,[
+			// 	{txt:["Cr.elm - innerHTML be Gone 2!"]} // childNodes attribute renders 3rd argument ignored when using fromJsonObject
+			// ]
+		]}
+	);
+
+
+	Cr.insertNode(jsonNode, document.body);
+	//document.body.appendChild(jsonNode);
+
+	var simpleJson = Cr.fromSimpleJson( // todo: build html converter
+		{
+			div:{
+				style:'color:blue;',
+				childNodes:[
+					{div: {
+						//event:['click','doStuff'],   // TODO fix events from json formats too
+						childNodes:[
+							{txt: "fun text here"},
+						]
+					}},
+					{txt: "fun text here"},
+					{hr: {}}
+				]
+			}
+		}
+	);
+
+	Cr.insertNode(simpleJson, document.body);
+
+	function clickFunctionTest(){
+		//its readl!
+	}
+
+	simpleJson = Cr.fromSimpleJson({div:{
+		style:"color:black;",
+		childNodes:[
+			{h1:{
+				childNodes:[
+					{text:"Cr.elm - innerHTML be Gone!"}
+				]
+			}},
+			{img:{
+				src:"../Cr.png",
+				"class":"ie reserved word test",
+				"var":"ie reserved word test",
+				alt:"Javascript CreateElement Library Cr.elm",
+				style:"float:right;height:67px;width:500px;",
+				events:[["click",clickFunctionTest]]
+			}},
+			{h3:{
+				childNodes:[
+					{text:"Simplifying document.createElement"}
+				]
+			}},
+			{text:"Imagine you have to create a bunch of elements using javascript.  Go ahead imagine it, I'll wait.  Sure you could just use .innerHTML, or you could use JQuery .html - however then your HTML code string must be parsed into elements."},
+			{br:{}},
+			{br:{}},
+			{text:"For the sake of elegance and simplicity and \"correct\" attachment of events you should be using document.createElement then document.body.appendChild; EXCEPT what a god awful amount of writing and lines of code and space that takes up."},
+			{br:{}},
+			{br:{}},
+			{text:"Instead using the elm function of the Cr library one can create and nest nodes with ease!"},
+			{br:{}},
+			{br:{}}
+		]
+	}});
+	Cr.insertNode(simpleJson, document.body);
+
+
+	//things ot test h ere: htis entier block
+	// var redOnMouseOver=function(ev){
+	// 	ev.target.style.color='red';
+	// }
+	// Cr.elm('div',{
+	// 	style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
+	// 	title: "About: childNodes as an attribute.",
+	// 	childNodes:[
+	// 		Cr.txt('If you would rather specify childNodes as an attribute, '),
+	// 		Cr.txt('which provides some more readable nesting options, this is also now supported.  '),
+	// 		Cr.elm('br'),
+	// 		Cr.elm('span',{
+	// 			style: 'color:black;cursor:crosshair;',
+	// 			events: Cr.events(
+	// 				Cr.event('mouseover',redOnMouseOver),
+	// 				Cr.event('mouseout',function(ev){ev.target.style.color='black';})
+	// 			),
+	// 			childNodes:[
+	// 				Cr.txt('When doing so, the third argument must be omitted.  Please "view source" (!!!client side only!!!) to see how this statement is generated')
+	// 			]
+	// 		})
+	// 	]
+	// },document.body);
+
+
 	// Cr.empty(document.head); // if your doc persists between requests, you are probably doing something wrong, but you can empty it
 	// Cr.empty(document.body); // instead you might prefer what is found in Cr-node.js see line 16
 
