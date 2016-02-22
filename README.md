@@ -159,8 +159,8 @@ that should give you everything you would expect to send to the client.  You may
 keep in mind `document` is not completely what you expect client side,
 it is a trimmed down version with only essential functionality for Cr
 ```
-See Cr-node-example-server.js
-See Cr-node-example-server-fast.js
+See Cr-node-test-server.js
+See Cr-node-test-server-fast.js
 See Cr-node-test.js
 See Cr-node.js to see how its initialized - this is what is required by default
 ```
