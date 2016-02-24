@@ -13,7 +13,7 @@ const PORT=8080;
 function fullTime(startTime){
 	var curTime = process.hrtime(/*startTime*/);
 	var sec = curTime[0] - startTime[0];
-	var ns = curTime[1] - startTime[1]
+	var ns = curTime[1] - startTime[1];
 	console.log([sec + (ns / 1e9), sec, ns]);
 	return curTime;
 }
@@ -54,7 +54,7 @@ document.head.appendChild(headerFrag);
 
 //console.log(document.head.childNodes); // to see that fragments not really treated normally, see notes in Cr-document.js Cr_fragment.appendChild
 
-document.doctype="<!DOCTYPE html>" // the default doctype is <!DOCTYPE html>
+document.doctype="<!DOCTYPE html>"; // the default doctype is <!DOCTYPE html>
 
 var bottomDivText = Cr.txt('Text from previous request');
 var bottomDiv = Cr.elm('div',{},[bottomDivText],document.body);
@@ -77,7 +77,7 @@ function handleRequest(request, response){
 
 	topTextNode.nodeValue=request.url;
 
-	topSpan.attributes.style="color:green;"
+	topSpan.attributes.style="color:green;";
 
 	// setTimeout(function(){
 	// 	Cr.elm('div',{},[Cr.txt('Rogue Thread: ' + request.url)],document.body); // just to prove how it works
@@ -93,7 +93,7 @@ function handleRequest(request, response){
 		//Cr.empty(bottomDiv);
 		//Cr.insertNode(Cr.txt('It Works!! Path Hit: ' + request.url), bottomDiv)
 
-		bottomDivText.nodeValue = 'It Works!! Path Hit: ' + request.url
+		bottomDivText.nodeValue = 'It Works!! Path Hit: ' + request.url;
 
 		//startTime = fullTime(startTime);
 

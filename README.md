@@ -83,6 +83,12 @@ If you really must attach events earlier
 (before appending to the tree)
 use 'loadevents' instead of 'events' (only available in `Cr-legacy.js` and only useful for images, see `Cr-img.js`)
 
+### Cr Js - - Client Side - - - - - - - - - - - - - - - - - - - -
+
+`npm install create-elements`
+
+More Examples of [HTML to Javascript](http://vidsbee.com/Cr.elm/fromhtml/)
+
 ### Cr Node - Server Side - - - - - - - - - - - - - - - - - - - -
 
 ```

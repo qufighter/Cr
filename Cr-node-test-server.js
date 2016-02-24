@@ -13,7 +13,7 @@ const PORT=8080;
 function fullTime(startTime){
 	var curTime = process.hrtime(/*startTime*/);
 	var sec = curTime[0] - startTime[0];
-	var ns = curTime[1] - startTime[1]
+	var ns = curTime[1] - startTime[1];
 	console.log([sec + (ns / 1e9), sec, ns]);
 	return curTime;
 }
@@ -31,7 +31,7 @@ function handleRequest(request, response){
 
 	require('./Cr-json.js')(Cr);
 
-	var jsonNode = Cr.fromJsonObject(
+	var nodes = Cr.fromJsonObject(
 		{elm:[
 			"h1",{
 				//event:['click','doStuff'],   // TODO fix events from json formats too
@@ -47,10 +47,10 @@ function handleRequest(request, response){
 	);
 
 
-	Cr.insertNode(jsonNode, document.body);
+	Cr.insertNode(nodes, document.body);
 	//document.body.appendChild(jsonNode);
 
-	var simpleJson = Cr.fromSimpleJson( // todo: build html converter
+	nodes = Cr.fromJson(
 		{
 			div:{
 				style:'color:blue;',
@@ -68,13 +68,13 @@ function handleRequest(request, response){
 		}
 	);
 
-	Cr.insertNode(simpleJson, document.body);
+	Cr.insertNode(nodes, document.body);
 
 	function clickFunctionTest(){
 		//its readl!
 	}
 
-	simpleJson = Cr.fromSimpleJson({div:{
+	nodes = Cr.fromJson({div:{
 		style:"color:black;",
 		childNodes:[
 			{h1:{
@@ -106,32 +106,32 @@ function handleRequest(request, response){
 			{br:{}}
 		]
 	}});
-	Cr.insertNode(simpleJson, document.body);
+	Cr.insertNode(nodes, document.body);
 
 
-	//things ot test h ere: htis entier block
-	// var redOnMouseOver=function(ev){
-	// 	ev.target.style.color='red';
-	// }
-	// Cr.elm('div',{
-	// 	style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
-	// 	title: "About: childNodes as an attribute.",
-	// 	childNodes:[
-	// 		Cr.txt('If you would rather specify childNodes as an attribute, '),
-	// 		Cr.txt('which provides some more readable nesting options, this is also now supported.  '),
-	// 		Cr.elm('br'),
-	// 		Cr.elm('span',{
-	// 			style: 'color:black;cursor:crosshair;',
-	// 			events: Cr.events(
-	// 				Cr.event('mouseover',redOnMouseOver),
-	// 				Cr.event('mouseout',function(ev){ev.target.style.color='black';})
-	// 			),
-	// 			childNodes:[
-	// 				Cr.txt('When doing so, the third argument must be omitted.  Please "view source" (!!!client side only!!!) to see how this statement is generated')
-	// 			]
-	// 		})
-	// 	]
-	// },document.body);
+	//this function that exists server side, would attempt to attach these events... if the dom supported addEventListener, though the exact strategy for attachment may be onEVENTS
+	var redOnMouseOver=function(ev){
+		ev.target.style.color='red';
+	};
+	Cr.elm('div',{
+		style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
+		title: "About: childNodes as an attribute.",
+		childNodes:[
+			Cr.txt('If you would rather specify childNodes as an attribute, '),
+			Cr.txt('which provides some more readable nesting options, this is also now supported.  '),
+			Cr.elm('br'),
+			Cr.elm('span',{
+				style: 'color:black;cursor:crosshair;',
+				events: Cr.events(
+					Cr.event('mouseover',redOnMouseOver),
+					Cr.event('mouseout',function(ev){ev.target.style.color='black';})
+				),
+				childNodes:[
+					Cr.txt('When doing so, the third argument must be omitted.  Please "view source" (!!! client generation side only, since this was generated SERVER side see the file being served, Cr-node-test-server.js !!!) to see how this statement is generated')
+				]
+			})
+		]
+	},document.body);
 
 
 	// Cr.empty(document.head); // if your doc persists between requests, you are probably doing something wrong, but you can empty it
@@ -163,7 +163,7 @@ function handleRequest(request, response){
 
 	document.head.appendChild(headerFrag);
 
-	document.doctype="<!DOCTYPE html>" // the default doctype
+	document.doctype="<!DOCTYPE html>"; // the default doctype
 
 	//setTimeout(function(){
 		Cr.elm('div',{},[Cr.txt('It Works!! Path Hit: ' + request.url)],document.body);

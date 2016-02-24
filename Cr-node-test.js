@@ -34,7 +34,7 @@ var headerFrag = Cr.frag([
 
 document.head.appendChild(headerFrag);
 
-document.doctype="<!DOCTYPE html>"
+document.doctype="<!DOCTYPE html>";
 
 //Cr.empty(headerFrag);
 //Cr.empty(elm1);

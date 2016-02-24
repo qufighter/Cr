@@ -1,7 +1,7 @@
 "use strict";
 
 var y = true;
-var inlineSlashifiable = {'hr':y,'br':y,'link':y,'meta':y,'input':y}
+var inlineSlashifiable = {'hr':y,'br':y,'link':y,'meta':y,'input':y};
 
 var Cr_fragment = function(ownerNode){
 	ownerNode = ownerNode || this; // owner node should basically never be provided except for internal usage... once the fragment is inserted however, each elements parent node could be updated
@@ -54,11 +54,11 @@ var Cr_fragment = function(ownerNode){
 			childHtml+=this.childNodes[n].__outerHTML();
 		}
 		return childHtml;
-	}
+	};
 
 	this.__empty = function(){
 		while(this.lastChild) this.removeChild(this.lastChild);
-	}
+	};
 
 	Object.defineProperty(this, "lastChild",{
 		get: function() {
@@ -137,7 +137,7 @@ var Cr_element = function(n){
 	this.__attribHTML = function(){
 		var o = [];
 		for( var k in this.attributes ){
-			o.push(k+'="'+this.attributes[k]+'"')
+			o.push(k+'="'+this.attributes[k]+'"');
 		}
 		if( o.length ) return ' '+o.join(' ');
 		return '';
@@ -168,7 +168,7 @@ var Cr_text = function(t){
 		return this.text;
 	};
 
-	this.__setText = function(t){ this.text=t; }
+	this.__setText = function(t){ this.text=t; };
 
 	Object.defineProperty(this, "outerHTML",{
 		get: this.__outerHTML,
@@ -213,6 +213,6 @@ var Cr_document = function(){
 		get: function(){return this.__doctype.replace(/\n$/,'');},
 		set: function(t){this.__doctype=t?t+"\n":"";}
 	});
-}
+};
 
 module.exports = Cr_document;
