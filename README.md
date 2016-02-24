@@ -10,6 +10,7 @@ This library is great if you
  2. wish to avoid innerHTML or document.write
  3. wish to populate node properties dynamically
 
+
 Here is what the transition looks like:
 https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644
 
@@ -34,17 +35,17 @@ The HTML into Cr.elm nested javascript converter
 can be found here:
   http://vidsbee.com/Cr.elm/fromhtml/
 
-### Event Listeners - - History - Present - - - - - - - - - - - -
+### Event Listeners - - History - Present
 
 [About Cr-Legacy and Cr-img](legacy)
 
-### Cr Js  --  Installation - - - - - - - - - - - - - - - - - - -
+### Cr Js - Installation
 
 `npm install create-elements`
 
 More Examples of [HTML to Javascript](http://vidsbee.com/Cr.elm/fromhtml/)
 
-### Cr Node - Server Side - - - - - - - - - - - - - - - - - - - -
+### Cr Node - Server Side
 
 ```
   var Cr = require('create-elements')();
