@@ -86,7 +86,9 @@ label{white-space:nowrap;}
 		}
 
 		function captureRenderedHtmlToInput(){
-			gel('toConvert').value = gel('test_nodes').innerHTML;
+			var tc=gel('toConvert');
+			tc.value = gel('test_nodes').innerHTML;
+			tc.scrollIntoViewIfNeeded();
 		}
 
 		function unlockValidationButtons(){
@@ -160,7 +162,7 @@ Instead using the elm function of the Cr library one can create and nest nodes w
 		Test Creates:</div>
 		<div id="test_nodes"></div>
 		
-<input onclick="captureRenderedHtmlToInput()" type="button" value="Capture Rendered HTML as Test Input" title="Makes the rendering above the HTML input" /><br/>
+<input onclick="captureRenderedHtmlToInput()" type="button" value="Capture Rendered HTML as Test Input" title="Makes the rendering above the HTML input. WARNING: at this time you will loose all events in the origional HTML." /><br/>
 
 			Note: Text nodes may not append correctly unless they are a child of a parent node since<br/>
 	Cr.txt never auto-appends to the DOM tree.  In these rare cases you can use Cr.insertNode(Cr.txt("text content"),document.body)<br/>
@@ -206,7 +208,7 @@ Javascript Objects<br/>
 	//paste your generated Javascript Object into the following variable
 	
 	CrJSONobject={elm:["div",{style:"color:red"},[{txt:["Hello World"]}],document.body]};
-	var node_s=Cr.fromJsonObject(CrJSONobject);
+	var node_s=Cr.fromJson(CrJSONobject);
 	Cr.insertNodes(node_s,document.body);
 
 	

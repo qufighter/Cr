@@ -156,4 +156,4 @@ Cr.event = Cr.evt,
 Cr.events = Cr.evt;
 
 //if( typeof(window) != 'undefined' ) window.Cr = Cr;
-if( typeof(module) != 'undefined' ) module.exports = function(domDocument){Cr.doc=domDocument;return Cr;};
+if( typeof(module) != 'undefined' ) module.exports = function(domDocument){Cr.doc=domDocument||Cr.doc;return Cr;};

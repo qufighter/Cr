@@ -4,6 +4,7 @@ var y = true;
 var inlineSlashifiable = {'hr':y,'br':y,'link':y,'meta':y,'input':y};
 
 var Cr_fragment = function(ownerNode){
+	this.nodeType = 11; // could define getter only
 	ownerNode = ownerNode || this; // owner node should basically never be provided except for internal usage... once the fragment is inserted however, each elements parent node could be updated
 	this.childNodes = [];
 	this.parentNode = false;
@@ -87,6 +88,7 @@ var Cr_fragment = function(ownerNode){
 
 var Cr_element = function(n){
 	this.localName = n;
+	this.nodeType = 1; // could define getter only
 	this.__fragment = new Cr_fragment(this); // the fragment contains all the child nodes... several node properties exist on the fragment for convenience
 	this.childNodes = this.__fragment.childNodes;
 	this.parentNode = this.__fragment.parentNode;
@@ -163,6 +165,7 @@ var Cr_element = function(n){
 
 var Cr_text = function(t){
 	this.text = t;
+	this.nodeType = 3; // could define getter only
 
 	this.__outerHTML = function(){
 		return this.text;

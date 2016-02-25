@@ -44,3 +44,5 @@ and can be an array of arrays instead of just one.
 If you really must attach events earlier 
 (before appending to the tree)
 use 'loadevents' instead of 'events' (only available in `Cr-legacy.js` and only useful for images, see `Cr-img.js`)
+
+Some more info about how to handle events can be found here: [Javascript on events to addEventListener](http://vidsbee.com/Cr.elm/fromhtml/#howtouse)

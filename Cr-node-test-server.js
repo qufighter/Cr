@@ -29,7 +29,12 @@ function handleRequest(request, response){
 	// Cr only uses its internal this.doc.body as a default/fallback if at all, otherwise only uses create node functions
 	// you may provide your own document when you require Cr
 
-	require('./Cr-json.js')(Cr);
+	require('./Cr-json.js')(Cr); // extend Cr with JSON support
+
+
+	var CrJSONstring='{"elm":["div",{"style":"color:red"},[{"txt":["Hello World"]}],"document.body"]}';
+	var node_s=Cr.fromJsonString(CrJSONstring);
+	Cr.insertNodes(node_s,document.body);
 
 	var nodes = Cr.fromJsonObject(
 		{elm:[

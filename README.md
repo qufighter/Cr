@@ -43,12 +43,14 @@ can be found here:
 
 `npm install create-elements`
 
+`var Cr = require('./node_modules/create-elements/Cr.js')(document); // client side you may omit document`
+
 More Examples of [HTML to Javascript](http://vidsbee.com/Cr.elm/fromhtml/)
 
 ### Cr Node - Server Side
 
 ```
-  var Cr = require('create-elements')();
+  var Cr = require('create-elements')(); // creates a new Cr-document using Cr-node.js
   var document = Cr.doc;
 ```
 or
@@ -56,11 +58,11 @@ or
   var Cr = require('./node_modules/create-elements/Cr-node.js')();
   var document = Cr.doc;
 ```
-oorr
+oorr use a custom document
 ```
   var CrDocument = require('./node_modules/create-elements/DOM/Cr-document.js');
   var document = new CrDocument();
-  var Cr = require('create-elements')(document); // by default returns a new document
+  var Cr = require('create-elements')(document);
 ```
 ooorrr
 ```
@@ -71,8 +73,14 @@ ooorrr
 ##### (how to extend)
 
 If you need to use `Cr-json.js` you'll have to require it.  This is the only other module besides `Cr.js` supported server side at this time.
-
-To use it, you'll likely have to implement your own version of `Cr-node.js` - See that file for recommendations.
+```
+  Cr = require('./node_modules/create-elements/Cr-json.js')(Cr);
+```
+or simply
+```
+  require('./node_modules/create-elements/Cr-json.js')(Cr);
+```
+Or better yet, implement your own version of the default node initializer `Cr-node.js` - See that file for recommendations.
 
 ##### (how to render)
 
