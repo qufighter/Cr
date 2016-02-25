@@ -326,7 +326,7 @@ Cr.elm('div',{
 	title: "About: childNodes as an attribute.",
 	childNodes:[
 		Cr.txt('If you would rather specify childNodes as an attribute, '),
-		Cr.txt('which provides some more readable nesting options, this is also now supported.  '),
+		Cr.txt('which provides some more readable nesting options, this is also now supported. '),
 		Cr.elm('br'),
 		Cr.elm('span',{
 			style: 'color:black;cursor:crosshair;',
@@ -335,11 +335,54 @@ Cr.elm('div',{
 				Cr.event('mouseout',function(ev){ev.target.style.color='black';})
 			),
 			childNodes:[
-				Cr.txt('When doing so, the third argument must be omitted.  Please "view source" to see how this statement is generated')
+				Cr.txt('When doing so, the third argument must be omitted.  The third argument is treated as appendTo.  Please "view source" to see how this statement is generated')
 			]
 		})
 	]
 },document.body);
+
+
+var elm = Cr.elm('div',{
+	style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
+	title: "About: childNodes as an attribute.",
+	childNodes:[
+		Cr.txt('If you would rather specify childNodes as an attribute;')
+	]
+},[
+	Cr.elm('br'),
+	Cr.txt('If you still specify the third argument and it\'s a node array, this will trigger a console.warn '),
+	Cr.elm('br'),
+	Cr.txt('the third argument addchilds will be array.concat with attributes.childNodes ')
+]);
+
+document.body.appendChild(elm);
+
+Cr.elm('div',{
+	style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
+	title: "About: childNodes as an attribute.",
+	childNodes:[
+		Cr.txt('If you would rather specify childNodes as an attribute;')
+	]
+},[
+	Cr.elm('br'),
+	Cr.txt('If you still specify the third argument node array, and fourth argument destination, this will trigger a console.warn '),
+	Cr.elm('br'),
+	Cr.txt('the third argument addchilds will be array.concat with attributes.childNodes '),
+		Cr.elm('br'),
+	Cr.txt('the fourth argument appnedTo will be honored as the 4rd argument ')
+],document.body);
+
+
+Cr.elm('div',{
+	style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
+	title: "About: childNodes as an attribute.",
+	childNodes:[
+		Cr.txt('If you would rather specify childNodes as an attribute;'),
+		Cr.elm('br'),
+		Cr.txt('If you still specify the fourth argument this will trigger a console.warn '),
+	]
+},document.body,document.body);
+
 </script>
 
 </body>

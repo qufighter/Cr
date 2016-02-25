@@ -69,7 +69,13 @@ var Cr = {
 						ne.addEventListener(lev[i][0],lev[i][1],lev[i][2]);
 			}
 			if( attributes.childNodes ){
-				if(appnedTo) throw("Exception: if providing attributes.childNodes 3 args max, addchilds argument becomes final argument appnedTo");
+				if(appnedTo || (addchilds && addchilds.length)){
+					console.warn("Cr Exception: if providing attributes.childNodes; 3 args max, addchilds argument becomes final argument appnedTo");
+					if( addchilds.length ){
+						attributes.childNodes = attributes.childNodes.concat(addchilds);
+						addchilds = appnedTo;
+					}
+				}
 				appnedTo = addchilds;
 				addchilds = attributes.childNodes;
 			}
