@@ -106,17 +106,59 @@ var Cr_element = function(n){
 //http://stackoverflow.com/questions/18002799/running-multiple-files-on-node-js-at-the-same-time
 //http://nodejs.org/api/modules.html
 
-		var attrEvent = event.substr(0,2) == 'on';
+		// current thinking is this may operate in different configurable modes.
+		// the default mode right now tries to use legacy onEVENT attributes and the event keyword present there
+		// to trigger the event function in a way that is compatible with addEventListener, where the
+		// first argument passed to the listener is the event
+
+		var isAttrEvent = event.substr(0,2) == 'on'; // seems improper to ever provide events:['onclick',fn] due to client side incompatibility
+		// if that's ever really needed, it should probably be set as a regular attribute not a special event/s attribute
+		var onEvent = isAttrEvent ? event : 'on'+event;
 
 		//TO IMPLEMENT - two modes?
-		if( typeof(listener) == 'string'){
-			if( attrEvent ){
+		if( typeof(listener) == 'string'){ // server side only convention... not compatible with Cr client side... so not really useful
+			if( isAttrEvent ){
 				//embed in document onevent="listener"
 			}else{
 				// embed in client side JS attach listener?? 
 			}
 		}else{
 			// assume function exist server side and client side?
+			// server side any object with name property will do, need not be function server side to work
+			// var myListener = {name: "myListener"};
+			// Cr.evt('click', myListener) found in event/s attribute
+			// results in attribute onclick="myListener(event)"
+			if( listener.name ){ // named function
+
+				this.setAttribute(onEvent, listener.name+'(event);');
+
+			}else{
+				// annon function / unnamed (var) function
+
+				var listenerStr = listener.toString();
+
+				// strategy
+				// 1) escape all single quotes found within NON ESCAPED double quotes
+				// 2) turn all double quotes into single quotes
+
+				if( listenerStr.indexOf('"') > -1  ){
+					//console.error("Whoah there Neo, that anonymous or unnamed function can't be an onEVENT because it contains doublequotes.  You provided:\n\n" + listenerStr)
+					//return;
+
+					// even though the strategy does not necessarily result in functional javascript...
+					// it still results in a sound dom hierarchy so we use it anyway for now (if we don't return above)
+					var quoParts = listenerStr.split('"');
+					for( var q = 1, l=quoParts.length; q<l; q+=2){
+						quoParts[q] = quoParts[q].replace(/'/g,"\\'");
+						if( quoParts[q].match(/\\$/) ){ // the double quote we are within is not truly terminated since it ends with an escape
+							q -= 1; continue; // move back by one so that we advance by one instead of two
+						}
+					}
+					listenerStr = quoParts.join("'");
+				}
+
+				this.setAttribute(onEvent, '('+listenerStr+')(event);');
+			}
 		}
 	};
 
@@ -192,6 +234,7 @@ var Cr_text = function(t){
 
 var Cr_document = function(){
 	this.__doctype="<!DOCTYPE html>\n";
+	this.nodeType = 9; // could define getter only
 	this.createElement = function(n){
 		return new Cr_element(n);
 	};

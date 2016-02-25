@@ -115,9 +115,14 @@ function handleRequest(request, response){
 
 
 	//this function that exists server side, would attempt to attach these events... if the dom supported addEventListener, though the exact strategy for attachment may be onEVENTS
-	var redOnMouseOver=function(ev){
-		ev.target.style.color='red';
+	//var redOnMouseOver=function redOnMouseOver(ev){ // IMPORTANT - named function only (like this), following are tests of un-named functions that work/don't work
+	var redOnMouseOver=function(ev){ // unnamed function!!! will be attached as annon fn
+		ev.target.style.color="red";console.log("test string with\" nea't\" stuff")// double quotes in function will cause problems, use named function instead
 	};
+	// var redOnMouseOver=function(ev){ // unnamed function!!! will be attached as annon fn
+	// 	ev.target.style.color='red';// double quotes in function will cause problems
+	// };
+	//var redOnMouseOver=function(ev){ev.target.style.color='red';};
 	Cr.elm('div',{
 		style: 'color:grey;border:1px solid red;border-radius:3px;padding:10px;margin:5px;',
 		title: "About: childNodes as an attribute.",
@@ -164,6 +169,7 @@ function handleRequest(request, response){
 		// Cr.elm("script",{src:"Cr.js"}),
 		// Cr.elm("script",{src:"Cr-json.js"}),
 		// Cr.elm("link",{href:"test.css", type:'text/css', rel:'stylesheet'})
+		Cr.elm('script',{},[Cr.txt("function clickFunctionTest(){alert('ok');};")])
 	]);
 
 	document.head.appendChild(headerFrag);
