@@ -60,7 +60,7 @@ var Cr = {
 *******************************************************************************/
 	doc : typeof document != 'undefined' ? document : null,
 	elm : function(nodeType,attributes,addchilds,appnedTo){
-		var ne=this.doc.createElement(nodeType),i,l,lev;
+		var ne=this.doc.createElement(nodeType),i,l,lev,a;
 		if(attributes){
 			if( lev=(attributes.event || attributes.events) ){
 				if(typeof(lev[0])=='string') ne.addEventListener(lev[0],lev[1],lev[2]);
@@ -80,11 +80,12 @@ var Cr = {
 				addchilds = attributes.childNodes;
 			}
 			for( i in attributes ){
+				a = attributes[i];
 				if( i.substring(0,5) == 'event' || i == 'childNodes' ){
 					//handled earlier
-				}else if( i == 'checked' || i == 'selected'){
-					if(attributes[i])ne.setAttribute(i,i);
-				}else ne.setAttribute(i,attributes[i]);
+				}else if( i == 'checked' || i == 'selected' ){
+					if(a)ne.setAttribute(i,i);
+				}else if( a || a===false || a==='' ) ne.setAttribute(i,a);
 			}
 		}
 		if(addchilds){

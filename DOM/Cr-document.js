@@ -121,6 +121,10 @@ var Cr_element = function(n){
 		return this.attributes[key];
 	};
 
+	this.removeAttribute = function(key){
+		return delete this.attributes[key];
+	};
+
 	this.addEventListener = function(event, listener, captrue){
 //http://stackoverflow.com/questions/18002799/running-multiple-files-on-node-js-at-the-same-time
 //http://nodejs.org/api/modules.html
@@ -198,9 +202,10 @@ var Cr_element = function(n){
 	};
 
 	this.__attribHTML = function(){
-		var o = [];
-		for( var k in this.attributes ){
-			o.push(k+'="'+this.attributes[k]+'"');
+		var a, o = [], k;
+		for( k in this.attributes ){
+			a = this.attributes[k]
+			if( a || a===false || a==='' ) o.push(k+'="'+a+'"');
 		}
 		if( o.length ) return ' '+o.join(' ');
 		return '';

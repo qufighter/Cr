@@ -30,19 +30,17 @@ describe 'Cr', ->
 
     context 'with childNodes attribute', ->
 
-      it "simple div ", ->
-
       myDiv = Cr.elm 'div',
         style: "color:blue;"
         childNodes: [  # when its not an array, this breaks poorly
           Cr.txt string1
         ]
 
-      expect(myDiv.outerHTML).to.equal("<div style=\"color:blue;\">#{string1}</div>")
+      it "simple div ", ->
+        expect(myDiv.outerHTML).to.equal("<div style=\"color:blue;\">#{string1}</div>")
+
 
     context 'without childNodes attribute', ->
-
-      it "simple div ", ->
 
       myDiv = Cr.elm 'div',
         style: "color:blue;"
@@ -50,4 +48,26 @@ describe 'Cr', ->
           Cr.txt string1
         ]
 
-      expect(myDiv.outerHTML).to.equal("<div style=\"color:blue;\">#{string1}</div>")
+      it "simple div ", ->
+        expect(myDiv.outerHTML).to.equal("<div style=\"color:blue;\">#{string1}</div>")
+
+      it "replace attribute", ->
+        myDiv.setAttribute('class', 'class1')
+        myDiv.removeAttribute('style');
+        expect(myDiv.outerHTML).to.equal("<div class=\"class1\">#{string1}</div>")
+
+      it "modify attribute", ->
+        myDiv.setAttribute('class', 'class1 class2')
+        expect(myDiv.outerHTML).to.equal("<div class=\"class1 class2\">#{string1}</div>")
+
+      it "empty attribute", ->
+        myDiv.setAttribute('class', '')
+        expect(myDiv.outerHTML).to.equal("<div class=\"\">#{string1}</div>")
+
+      it "omit null attribute", ->
+        myDiv.setAttribute('class', null)
+        expect(myDiv.outerHTML).to.equal("<div>#{string1}</div>")
+
+      it "omit undefined attribute", ->
+        myDiv.setAttribute('class', undefined)
+        expect(myDiv.outerHTML).to.equal("<div>#{string1}</div>")
