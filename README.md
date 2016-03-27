@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/qufighter/Cr.svg)](https://travis-ci.org/qufighter/Cr)
+
 ### Welcome to Cr.elm Library - think of it as document.create
 
 The easy way to go from HTML to Javascript and back again!
