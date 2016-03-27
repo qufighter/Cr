@@ -57,8 +57,16 @@ describe 'Cr', ->
         myDiv.removeAttribute('style');
         expect(myDiv.outerHTML).to.equal("<div class=\"class1\">#{string1}</div>")
 
-      it "modify attribute", ->
-        myDiv.setAttribute('class', 'class1 class2')
+      it "modify attribute list", ->
+        myDiv.setAttribute('class', Cr.list(['class1','class2']))
+        expect(myDiv.outerHTML).to.equal("<div class=\"class1 class2\">#{string1}</div>")
+
+      it "modify attribute keys list", ->
+        myDiv.setAttribute('class', Cr.list(Cr.keys({class1:1,class2:1,class3:0})))
+        expect(myDiv.outerHTML).to.equal("<div class=\"class1 class2\">#{string1}</div>")
+
+      it "modify attribute listKeys", ->
+        myDiv.setAttribute('class', Cr.listKeys({class1:true,class2:true,class4:0}))
         expect(myDiv.outerHTML).to.equal("<div class=\"class1 class2\">#{string1}</div>")
 
       it "empty attribute", ->

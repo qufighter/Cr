@@ -119,6 +119,24 @@ var Cr = {
 			o+=k+':'+map[k]+';';
 		return o;
 	},
+	/*Cr.list creates list from array */
+	list: function(arr, seperator){
+		seperator = seperator || ' '; // default class list
+		return arr.join(seperator);
+	},
+	/*Cr.keys returns an array containing the keys with truthy values */
+	keys: function(map, allKeys){
+		var keys = Object.keys(map);
+		if( allKeys ) return keys;
+		for( var k=0,l=keys.length,ret=[]; k<l; k++ ){
+			if( map[keys[k]] )ret.push(keys[k]);
+		}
+		return ret;
+	},
+	/*Cr.listKeys creates list from truthy keys */
+	listKeys: function(map, seperator){
+		return this.list(this.keys(map),seperator);
+	},
 	/*Cr.events creates event arrays, or just use array literals */
 	evt : function(eventType,callback,useCapture){ return Array.prototype.slice.call(arguments); },
 	evts: null,// (evt0, evt1, evtN...)
