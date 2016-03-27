@@ -122,7 +122,8 @@ var Cr_element = function(n){
 	};
 
 	this.removeAttribute = function(key){
-		return delete this.attributes[key];
+		// return delete this.attributes[key];
+		this.attributes[key] = null; // we omit null or undefined attributes
 	};
 
 	this.addEventListener = function(event, listener, captrue){

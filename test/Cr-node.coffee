@@ -8,6 +8,7 @@ verifyTextNodeValue = (node, val)->
   expect(node.nodeValue).to.equal(val)
   expect(node.innerHTML).to.equal(val) # Cr-document only
   expect(node.outerHTML).to.equal(val) # Cr-document only
+  # textContent is DOM only for now
 
 document = new (require('../DOM/Cr-document.js'))
 Cr = require('../Cr-node.js')(document)

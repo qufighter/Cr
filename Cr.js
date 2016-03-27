@@ -113,6 +113,12 @@ var Cr = {
 		if(nodes) this.insertNodes(nodes, f);
 		return f;
 	},
+	/*Cr.css creates style attribute from map */
+	css: function(map){
+		var o="",k; for( k in map )
+			o+=k+':'+map[k]+';';
+		return o;
+	},
 	/*Cr.events creates event arrays, or just use array literals */
 	evt : function(eventType,callback,useCapture){ return Array.prototype.slice.call(arguments); },
 	evts: null,// (evt0, evt1, evtN...)
