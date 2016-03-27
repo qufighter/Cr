@@ -3,6 +3,16 @@
 var y = true;
 var inlineSlashifiable = {'hr':y,'br':y,'link':y,'meta':y,'input':y};
 
+var __newParent = function(ownerNode, c){
+	if( c.parentNode ) c.parentNode.removeChild(c);
+	c.parentNode = ownerNode;
+}
+
+var __addNode = function(ownerNode, c){
+	__newParent(ownerNode, c);
+	ownerNode.childNodes.push(c);
+}
+
 var Cr_fragment = function(ownerNode){
 	this.nodeType = 11; // could define getter only
 	ownerNode = ownerNode || this; // owner node should basically never be provided except for internal usage... once the fragment is inserted however, each elements parent node could be updated
@@ -13,19 +23,26 @@ var Cr_fragment = function(ownerNode){
 		// c is suppose to be a node, but it could be a fragment too... since fragments render like regular HTML its not really distinguishable server side
 		// if c is a fragment.... we might do things a little differently
 		// we could append each child node in that case... since each element in the fragment will have the wrong parentNode (fragment itself)
-		// ideally if c is a fragment, we might just append the whole fragment as a single child node still, but update the parentNode on each to be ownerNode
-		// what we have now works, but traversing the hierarchy that contains fragments will not work exactly the way you would expect it to work client side at this time, since each fragment is "one node".
-		if( c.parentNode ) c.parentNode.removeChild(c);
-		c.parentNode = ownerNode;
-		this.childNodes.push(c);
-		return c;
+
+		// if( c.nodeType==11 ){ // more document like
+		// 	while( c.childNodes.length ){
+		// 		this.__addNode(ownerNode, c.childNodes[0]);
+		// 	}
+		// }else{
+		// 	this.__addNode(ownerNode, c);
+		// }
+		// return c;
+
+		// ideally if c is a fragment, we might just append the whole fragment as a single child node still
+		// what we have now works, but traversing the hierarchy that contains fragments will not work exactly the way you would expect it to work client side (see above) at this time, since each fragment is "one node".
+		__addNode(ownerNode, c);
+		return c; // "penalty of removal free"
 	};
 
 	this.insertBefore = function(c,b){
 		for( var n=0,l=this.childNodes.length; n<l; n++ ){
 			if( this.childNodes[n] === b ){
-				if( c.parentNode ) c.parentNode.removeChild(c);
-				c.parentNode = ownerNode;
+				__newParent(ownerNode, c);
 				this.childNodes.splice(n, 0, c);
 				return c;
 			}
@@ -52,7 +69,7 @@ var Cr_fragment = function(ownerNode){
 	this.__innerHTML = function(){
 		var childHtml = '';
 		for( var n=0,l=this.childNodes.length; n<l; n++ ){
-			childHtml+=this.childNodes[n].__outerHTML();
+			childHtml+=this.childNodes[n].__outerHTML(); // could call outerHTML() here, we don't for quickness
 		}
 		return childHtml;
 	};
@@ -94,6 +111,8 @@ var Cr_element = function(n){
 	this.parentNode = this.__fragment.parentNode;
 	this.attributes = {};
 
+	this.__cachedAttributes = ""; // you know its going to happen
+
 	this.setAttribute = function(key, val){
 		this.attributes[key] = val;
 	};
@@ -116,7 +135,7 @@ var Cr_element = function(n){
 		var onEvent = isAttrEvent ? event : 'on'+event;
 
 		//TO IMPLEMENT - two modes?
-		if( typeof(listener) == 'string'){ // server side only convention... not compatible with Cr client side... so not really useful
+		if( typeof(listener) == 'string'){ // server side only convention... not compatible with Cr client side... so not really useful,however json format event lister is string only...and needs work...
 			if( isAttrEvent ){
 				//embed in document onevent="listener"
 			}else{
@@ -199,7 +218,10 @@ var Cr_element = function(n){
 
 	Object.defineProperty(this, "nodeValue", Object.getOwnPropertyDescriptor(this.__fragment, 'nodeValue'));
 
-	Object.defineProperty(this, "outerHTML", Object.getOwnPropertyDescriptor(this.__fragment, 'outerHTML'));
+
+	Object.defineProperty(this, "outerHTML",{
+		get: this.__outerHTML
+	});
 
 	Object.defineProperty(this, "innerHTML", Object.getOwnPropertyDescriptor(this.__fragment, 'innerHTML'));
 

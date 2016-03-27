@@ -6,6 +6,7 @@
 
 //Lets require/import the HTTP module
 var http = require('http');
+var fs = require('fs');
 
 //Lets define a port we want to listen to
 const PORT=8080;
@@ -20,6 +21,13 @@ function fullTime(startTime){
 
 //We need a function which handles requests and send response
 function handleRequest(request, response){
+
+	if( request.url == '/Cr.js'){
+		fs.readFile('Cr.js', {}, function(err, text){
+			response.end(text);
+		});
+		return;
+	}
 
 	if( request.url != '/' ){response.end("EOF");return;}
 	//var startTime = process.hrtime();
@@ -153,6 +161,10 @@ function handleRequest(request, response){
 		Cr.elm('a',{'href':'#freshLinks'},[Cr.txt('Click Me '), Cr.ent('&nbsp;')])
 	],document.body);
 
+	// some crazy ideas about classList support, rather classes.join(' ') unless the impl can be exactly like native support;
+	// elm1.classList.add('red').remove('red');
+	// console.log(elm1.classList._get());
+
 	var link2 = Cr.elm('a',{'href':'#link2'},[
 		Cr.txt("You Know What to Do!"),
 		Cr.elm('br'),
@@ -166,7 +178,7 @@ function handleRequest(request, response){
 	],document.head);
 
 	var headerFrag = Cr.frag([
-		// Cr.elm("script",{src:"Cr.js"}),
+		Cr.elm("script",{src:"Cr.js"}),
 		// Cr.elm("script",{src:"Cr-json.js"}),
 		// Cr.elm("link",{href:"test.css", type:'text/css', rel:'stylesheet'})
 		Cr.elm('script',{},[Cr.txt("function clickFunctionTest(){alert('ok');};")])
@@ -175,6 +187,17 @@ function handleRequest(request, response){
 	document.head.appendChild(headerFrag);
 
 	document.doctype="<!DOCTYPE html>"; // the default doctype
+
+	string1 = '2Hello World2'
+	var div = Cr.elm('div', {
+	  style: "color:blue;",
+	  childNodes: [Cr.txt(string1)]
+	});
+
+	document.body.appendChild(div);
+	//Cr.insertNode(div, document.body);
+
+
 
 	//setTimeout(function(){
 		Cr.elm('div',{},[Cr.txt('It Works!! Path Hit: ' + request.url)],document.body);
