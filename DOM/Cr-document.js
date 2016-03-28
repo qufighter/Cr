@@ -1,7 +1,7 @@
 "use strict";
 
 var y = true;
-var inlineSlashifiable = {'hr':y,'br':y,'link':y,'meta':y,'input':y};
+var inlineSlashifiable = {'hr':y,'br':y,'img':y,'link':y,'meta':y,'input':y};
 
 var __newParent = function(ownerNode, c){
 	if( c.parentNode ) c.parentNode.removeChild(c);
@@ -12,6 +12,175 @@ var __addNode = function(ownerNode, c){
 	__newParent(ownerNode, c);
 	ownerNode.childNodes.push(c);
 }
+
+var __toKeys = function(arr){
+	var map = {};
+	for( var n=0,l=arr.length; n<l; n++ ){
+		map[arr[n]] = true;
+	}
+	return map;
+};
+
+var __parseSelectors = function(selectors){
+	var nextSelector = __nextSelector(selectors), allSelectors = [];
+	while(nextSelector){
+		allSelectors.push(nextSelector.selector);
+		nextSelector = __nextSelector(nextSelector.remaining);
+	}
+	return allSelectors;
+
+}
+
+var __nextSelector = function(selectors){
+	var selector = {classes:{}, attributes: {}, nextSelectorCombinator: null}, sstr, ncomb, ncombType, scmp, components, type, mapType, val;
+
+	var combinators = {
+		'': 'descendant',
+		'>': 'child',
+		'~': 'subsequentSiblings',
+		'+': 'nextSiblings'
+	}
+
+	var types = {
+		'': 'type',
+		'#': 'id'
+	}
+	var mapTypes = {
+		'.': 'classes',
+		'[': 'attributes'
+	}
+
+	var comparitors = {
+		'' : function(v){return v;},
+		'=' : function(v){return new RegExp('^'+v+'$');},
+		'~=' : function(v){return new RegExp('^'+v+'\s|\s'+v+'\s|\s'+v+'$');},
+		'|=' : function(v){return new RegExp('^'+v+'$|^'+v+'-');}, // really useful?
+		'^=' : function(v){return new RegExp('^'+v);},
+		'$=' : function(v){return new RegExp(v+'$');},
+		'*=' : function(v){return v;}
+		// [attr operator value i] https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
+	}
+
+	var typeProcessors = {
+		attributes: function(s, val){
+			var kvp = val.match(/^([^=~|^$*]+)([=~|^$*]{0,2})"*([^"]*)/), k, v, c;
+			if( !kvp || kvp.length < 4 ) return;
+			k=kvp[1], c=kvp[2], v=kvp[3];
+			console.log(val, k,c,v)
+			s.attributes[k] = comparitors[c](v); // we.match(v) if its truthy (if falsey, we allow the attribute basedon presense of key)
+		}
+	}
+
+	// matches only first attribute 'div[class~="fun"]'.match(/^[^ >~+[]+[\[]?[^=~|^$*]*[=~|^$*]{0,2}[^ >~+]*/)
+	sstr = selectors.match(/^[^ >~+]+/); // TODO: warning [key="quoted"] attrib selector may contain these though [also anywhere inside brackets can contain ~]
+	if( !sstr || sstr.length != 1 ) return false;
+	sstr = sstr[0]; //!!!!
+
+
+	ncomb = selectors.substr(sstr.length).match(/^[ >~+]+/);
+	//console.log(sstr, ncomb);
+	if( ncomb && ncomb.length ){
+		ncomb = ncomb[0];
+		ncombType = ncomb.replace(/ /g, '');
+		selector.nextSelectorCombinator = combinators[ncombType];
+	}else{
+		ncomb = "";
+	}
+
+	scmp = sstr.match(/[.#\[]?[^.#\[\]]+[\]]?/g); // "
+
+	for( var i=0,l=scmp.length; i<l; i++ ){
+		components = scmp[i].match(/^([.#\[]?)([^\]]+)/);
+		if( !components || components.length < 3 ) continue; //somethign broke!!!
+
+		type = components[1];
+		val = components[2];
+		mapType = mapTypes[type];
+
+		if( types[type] ){
+			selector[types[type]] = val;
+		}else if( mapType ) {
+			if( typeProcessors[mapType] ){
+				typeProcessors[mapType](selector, val);
+			}else selector[mapType][val] = true;
+		}
+	}
+
+	return {selector:selector, remaining: selectors.substr(sstr.length + ncomb.length) };
+}
+
+var __matches = function(node, selectors){
+	selectors = typeof selectors === 'string' ? __parseSelectors(selectors) : selectors; // selectors may already be parsed
+	// native matches could be cool,
+	// since this may consider parent nodes!
+	// and the element must really match the final selector
+	// sure we could just call document.querySelectorAll and return the matching node from that set if found
+	// but what is the fun in that!
+}
+
+var __querySelectorAll = function(node, selectors, selectorIndex){
+	var matchedNodes = [], parentSelector, selectorComponent, nextSelectorComponent, nextNextSelectorComponent, nextChildNode;  // these nodes matched top level selector... need to probably verify they match full query before adding
+
+	if( !node.childNodes ) return matchedNodes;
+
+	selectors = typeof selectors === 'string' ? __parseSelectors(selectors) : selectors; // selectors may already be parsed
+
+	parentSelector = {nextSelectorCombinator:'descendant'};
+	selectorIndex = selectorIndex || 0;
+	selectorComponent = selectors[selectorIndex];
+
+	if( selectors[selectorIndex-1] ){
+		parentSelector = selectors[selectorIndex-1];
+	}
+
+	var siblingProcessorsMode = {
+		'nextSiblings': 'single',
+		'subsequentSiblings': 'multi'
+	}
+
+	nextSelectorComponent = selectors[selectorIndex+1];
+	nextNextSelectorComponent = selectors[selectorIndex+2];
+
+	for( var n=0,n2=0,l=node.childNodes.length; n<l; n++ ){
+
+		if( node.childNodes[n].__matchesSelectorComponent(selectorComponent) ){
+			if( selectorComponent.nextSelectorCombinator && nextSelectorComponent ){
+				n2 = n+1;
+				nextChildNode = node.childNodes[n2];
+				if( siblingProcessorsMode[selectorComponent.nextSelectorCombinator] && nextChildNode){
+					while( nextChildNode ){
+						if( nextChildNode.__matchesSelectorComponent(nextSelectorComponent) ){
+							if( !nextNextSelectorComponent ){
+								matchedNodes.push(nextChildNode);
+							}
+							else{
+								matchedNodes = matchedNodes.concat( __querySelectorAll(nextChildNode, selectors, selectorIndex+2) );
+							}
+						}
+						if( siblingProcessorsMode[selectorComponent.nextSelectorCombinator] == 'multi' ){
+							nextChildNode = node.childNodes[++n2];
+							if( nextChildNode && nextChildNode.__matchesSelectorComponent(selectorComponent) ){
+								nextChildNode = false; // we found our own node again, we'll be in this loop again and search for it's subsequentSiblings soon, break;
+							}
+						}else{
+							nextChildNode = false; // break;
+						}
+					}
+				}else{
+					matchedNodes = matchedNodes.concat( __querySelectorAll(node.childNodes[n], selectors, selectorIndex+1) );
+				}
+			}else{
+				// we are on the final selector, and it matched!
+				matchedNodes.push(node.childNodes[n]);
+			}
+		}
+		if( parentSelector.nextSelectorCombinator == 'descendant' ){ // this check for querySelectorAll should PROBABLY happen at top of this function, check node has childNodes ?
+			matchedNodes = matchedNodes.concat( __querySelectorAll(node.childNodes[n], selectors, selectorIndex) );
+		}
+	}
+	return matchedNodes;
+};
+
 
 var Cr_fragment = function(ownerNode){
 	this.nodeType = 11; // could define getter only
@@ -62,6 +231,19 @@ var Cr_fragment = function(ownerNode){
 		return new Cr_text(this.__outerHTML());
 	};
 
+
+	this.querySelector = function(selectors){
+		//simplified for now to the more expensive
+		// a future 4rd argument to __querySelectorAll may lead it to return early as it finds a match
+		var results = __querySelectorAll(this, selectors, 0);
+		return results.length ? results[0] : null;
+	};
+
+	this.querySelectorAll = function(selectors){
+		var results = __querySelectorAll(this, selectors);
+		return results.length ? results : null;
+	};
+
 	this.__outerHTML = function(){
 		return this.__innerHTML();
 	};
@@ -109,7 +291,9 @@ var Cr_element = function(n){
 	this.__fragment = new Cr_fragment(this); // the fragment contains all the child nodes... several node properties exist on the fragment for convenience
 	this.childNodes = this.__fragment.childNodes;
 	this.parentNode = this.__fragment.parentNode;
-	this.attributes = {};
+	this.querySelector = this.__fragment.querySelector;
+	this.querySelectorAll = this.__fragment.querySelectorAll;
+	this.attributes = {}; // recommend you do not use this since it works poorly client side
 
 	this.__cachedAttributes = ""; // you know its going to happen
 
@@ -220,16 +404,68 @@ var Cr_element = function(n){
 		return '<' + this.localName + this.__attribHTML() + '>' + insideHtml + '</' + this.localName + '>';
 	};
 
+	this.__classes = function(){
+		return (this.attributes.class || this.attributes.className || "").split(' ');
+	};
+
+	this.__classesMap = function(){
+		return __toKeys(this.__classes());
+	};
+
+	this.__hasAllClasses = function(classesMap){
+		var classes = this.__classes();
+		var foundClasses = {}, found=0;
+		for( var n=0,l=classes.length; n<l; n++ ){
+			if( classesMap[classes[n]] && !foundClasses[classes[n]]){
+				foundClasses[classes[n]] = true;
+				found++;
+			}
+		}
+		return Object.keys(classesMap).length == found;
+	};
+
+	this.__hasAllAttributes = function(attribMap){
+		for( var k in attribMap ){
+			if( !this.attributes[k] || (attribMap[k] && !this.attributes[k].match(attribMap[k])) ) return false;
+		}
+		return Object.keys(attribMap).length || true;
+	};
+
+	this.matches = function(selectorString){
+		__matches(this, selectorString);
+	}
+
+	this.__matchesSelectorComponent = function(selector){
+		// all selector must match, selector should really not be empty!
+		// when no selector component is specified, match SHOULD be false !
+		if( selector.type && this.localName != selector.type ){
+			return false;
+		}
+		if( selector.id && this.attributes.id != selector.id ){
+			return false;
+		}
+		if( selector.classes && !this.__hasAllClasses(selector.classes) ){
+			return false;
+		}
+		if( selector.attributes && !this.__hasAllAttributes(selector.attributes) ){
+			return false;
+		}
+		return true;
+	}
+
 	Object.defineProperty(this, "lastChild", Object.getOwnPropertyDescriptor(this.__fragment, 'lastChild'));
 
 	Object.defineProperty(this, "nodeValue", Object.getOwnPropertyDescriptor(this.__fragment, 'nodeValue'));
 
+	Object.defineProperty(this, "innerHTML", Object.getOwnPropertyDescriptor(this.__fragment, 'innerHTML'));
 
 	Object.defineProperty(this, "outerHTML",{
 		get: this.__outerHTML
 	});
 
-	Object.defineProperty(this, "innerHTML", Object.getOwnPropertyDescriptor(this.__fragment, 'innerHTML'));
+	Object.defineProperty(this, "classList",{
+		get: this.__classes
+	});
 
 };
 
@@ -237,11 +473,11 @@ var Cr_text = function(t){
 	this.text = t;
 	this.nodeType = 3; // could define getter only
 
-	this.__outerHTML = function(){
-		return this.text;
-	};
+	this.__outerHTML = function(){ return this.text; };
 
 	this.__setText = function(t){ this.text=t; };
+
+	this.__matchesSelectorComponent = function(){ return false; }
 
 	Object.defineProperty(this, "outerHTML",{
 		get: this.__outerHTML,
@@ -277,6 +513,8 @@ var Cr_document = function(){
 	this.html = this.createElement('html');
 	this.html.appendChild(this.head);
 	this.html.appendChild(this.body);
+	this.querySelector = this.html.querySelector;
+	this.querySelectorAll = this.html.querySelectorAll; // this is not quite right, since we could match html, but works for normal usage
 	this.__outerHTML = function(){
 		return this.__doctype+this.html.outerHTML;
 	};

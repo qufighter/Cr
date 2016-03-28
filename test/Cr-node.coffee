@@ -80,3 +80,217 @@ describe 'Cr', ->
       it "omit undefined attribute", ->
         myDiv.setAttribute('class', undefined)
         expect(myDiv.outerHTML).to.equal("<div>#{string1}</div>")
+
+    context 'query-selectable-elements', ->
+      # todo - test document.
+      # document.querySelector('html') works in chrome
+      myDiv = Cr.elm 'div',
+        style: "color:blue;"
+        class: Cr.list ["magic"]
+        [
+          Cr.elm 'span', {href:"defined", class:"wildtest"}, [Cr.txt(string1)]
+          Cr.elm 'span', {class:"word"}, [
+            Cr.elm 'span', {class:"wildtest"}, [Cr.txt(string1)]
+            Cr.elm 'span', {class:"word2 word"}, [Cr.txt(string2)]
+          ]
+          Cr.elm 'span', {class:"wildtest"}, [Cr.txt(string3)]
+          Cr.elm 'span', {class:"up"},
+            [Cr.elm 'span', {id:"woah",class:"woah1"}, [Cr.txt(string3)]]
+          Cr.elm 'span', {class:"word2-yourmom word word3"}, [Cr.txt(string3)]
+          Cr.elm 'span', {},
+            [
+              Cr.elm 'h3', {},
+                [Cr.elm 'span', {id:"woah",class:"woah1"}, [Cr.txt(string1)]]
+            ]
+        ]
+
+      firstSpanWordHtml = '<span class="wildtest">Hello World</span><span class="word2 word">Hell0 World0</span>'
+
+      totalSpans = 10
+
+      it "does not find div (containter itself)", ->
+        results = myDiv.querySelectorAll('div')
+        expect(results).to.equal(null)
+
+      it "finds all `span`", ->
+        results = myDiv.querySelectorAll('span')
+        expect(results.length).to.equal(totalSpans)
+
+      it "finds all `span.word`", ->
+        results = myDiv.querySelectorAll('span.word')
+        expect(results.length).to.equal(3)
+        expect(results[0].innerHTML).to.equal(firstSpanWordHtml)
+        expect(results[1].innerHTML).to.equal(string2)
+        expect(results[2].innerHTML).to.equal(string3)
+
+      it "finds a `span.word`", ->
+        results = myDiv.querySelector('span.word')
+        expect(results).to.be.ok
+        expect(results.innerHTML).to.equal(firstSpanWordHtml)
+
+      it "finds all `span[href=defined]`", ->
+        results = myDiv.querySelectorAll('span[href=defined]')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string1)
+
+      it 'finds all `span[href="defined"]`', ->
+        results = myDiv.querySelectorAll('span[href="defined"]')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string1)
+
+      it 'finds no `span[href="def"]`', ->
+        results = myDiv.querySelectorAll('span[href="def"]')
+        expect(results).to.equal(null)
+
+      it 'finds all `span[href^="def"]`', ->
+        results = myDiv.querySelectorAll('span[href^="def"]')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string1)
+
+      it 'finds all `span[href$="ined"]`', ->
+        results = myDiv.querySelectorAll('span[href$="ined"]')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string1)
+
+      it 'finds all `span.word2`', ->
+        results = myDiv.querySelectorAll('span.word2')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string2)
+
+      it 'finds all `span[class*="word2"]`', ->
+        results = myDiv.querySelectorAll('span[class*="word2"]')
+        expect(results.length).to.equal(2)
+        expect(results[0].innerHTML).to.equal(string2)
+        expect(results[1].innerHTML).to.equal(string3)
+
+      it 'finds all `span[class|="word2"]`', ->
+        results = myDiv.querySelectorAll('span[class|="word2"]') # seems to actually work right wiht 1 match
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string3)
+
+      # it 'finds all `span[class~="word2"]`', ->
+      #   results = myDiv.querySelectorAll('span[class~="word2"]')
+      #   expect(results.length).to.equal(1)
+      #   expect(results[0].innerHTML).to.equal(string2)
+
+      it 'finds no `span[href="undefined"]`', ->
+        results = myDiv.querySelector('span[href="undefined"]')
+        expect(results).to.equal(null)
+
+      it "finds all `span[href]`", ->
+        results = myDiv.querySelectorAll('span[href]')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string1)
+
+      it "finds no `span[hrzef]`", ->
+        results = myDiv.querySelectorAll('span[hrzef]')
+        expect(results).to.equal(null)
+
+      it "finds all `span[]`", ->
+        results = myDiv.querySelectorAll('span[]')
+        expect(results.length).to.equal(totalSpans)
+
+      it "finds all `span.woah1`", ->
+        results = myDiv.querySelectorAll('span.woah1')
+        expect(results.length).to.equal(2)
+        expect(results[0].innerHTML).to.equal(string3)
+        expect(results[1].innerHTML).to.equal(string1) # for some reason this is differnt in dom, probably because of ID
+
+      it "finds all `span span.woah1`", ->
+        results = myDiv.querySelectorAll('span span.woah1')
+        expect(results.length).to.equal(2)
+        expect(results[0].innerHTML).to.equal(string3)
+        expect(results[1].innerHTML).to.equal(string1)
+
+      it "finds all `span#woah`", ->
+        results = myDiv.querySelectorAll('span#woah')
+        expect(results.length).to.equal(2)
+        expect(results[0].innerHTML).to.equal(string3)
+        expect(results[1].innerHTML).to.equal(string1) # for some reason this is differnt in dom, probably because of ID
+
+      it "finds all `span span#woah`", ->
+        results = myDiv.querySelectorAll('span span#woah')
+        expect(results.length).to.equal(2)
+        expect(results[0].innerHTML).to.equal(string3)
+        expect(results[1].innerHTML).to.equal(string1)
+
+      it "finds all `span span`", ->
+        results = myDiv.querySelectorAll('span span')
+        expect(results.length).to.equal(4)
+        expect(results[0].innerHTML).to.equal(string1)
+        expect(results[1].innerHTML).to.equal(string2)
+        expect(results[2].innerHTML).to.equal(string3)
+        expect(results[3].innerHTML).to.equal(string1)
+
+      it "finds all `span > span`", ->
+        results = myDiv.querySelectorAll('span > span >')
+        expect(results.length).to.equal(3)
+        expect(results[0].innerHTML).to.equal(string1)
+        expect(results[1].innerHTML).to.equal(string2)
+        expect(results[2].innerHTML).to.equal(string3)
+
+      it "finds all `span > span.woah1`", ->
+        results = myDiv.querySelectorAll('span > span.woah1')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string3)
+
+      it "finds all `span > span#woah`", ->
+        results = myDiv.querySelectorAll('span > span#woah')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string3)
+
+      it "finds all `span.wildtest`", ->
+        results = myDiv.querySelectorAll("span.wildtest")
+        expect(results.length).to.equal(3)
+        expect(results[0].innerHTML).to.equal(string1)
+        expect(results[1].innerHTML).to.equal(string1)
+        expect(results[2].innerHTML).to.equal(string3)
+
+      it "finds all `span.wildtest + span.word`", ->
+        results = myDiv.querySelectorAll("span.wildtest + span.word")
+        expect(results.length).to.equal(2)
+        expect(results[0].innerHTML).to.equal(firstSpanWordHtml)
+        expect(results[1].innerHTML).to.equal(string2)
+
+      it "finds all `span + span.word`", ->
+        results = myDiv.querySelectorAll("span + span.word")
+        expect(results.length).to.equal(3)
+        expect(results[0].innerHTML).to.equal(firstSpanWordHtml)
+        expect(results[1].innerHTML).to.equal(string2)
+        expect(results[2].innerHTML).to.equal(string3)
+
+      it "finds all `span ~ span.word`", ->
+        results = myDiv.querySelectorAll("span + span.word")
+        expect(results.length).to.equal(3)
+        expect(results[0].innerHTML).to.equal(firstSpanWordHtml)
+        expect(results[1].innerHTML).to.equal(string2)
+        expect(results[2].innerHTML).to.equal(string3)
+
+      it "finds all `span.wildtest ~ span.word`", ->
+        results = myDiv.querySelectorAll("span.wildtest ~ span.word")
+        expect(results.length).to.equal(3)
+        expect(results[0].innerHTML).to.equal(firstSpanWordHtml)
+        expect(results[1].innerHTML).to.equal(string2)
+        expect(results[2].innerHTML).to.equal(string3)
+
+      it "finds all `span.word ~ span.up span#woah`", ->
+        results = myDiv.querySelectorAll("span.word ~ span.up span#woah")
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string3)
+
+      it "finds null `span.word + span.up", ->
+        results = myDiv.querySelectorAll("span.word + span.up")
+        expect(results).to.equal(null)
+
+      it "finds null `span.word + span.up span#woah`", ->
+        results = myDiv.querySelectorAll("span.word + span.up span#woah")
+        expect(results).to.equal(null)
+
+      it "finds null `span.word > span.up", ->
+        results = myDiv.querySelectorAll("span.word > span.up")
+        expect(results).to.equal(null)
+
+      it "finds null `span.word > span.up span#woah`", ->
+        results = myDiv.querySelectorAll("span.word > span.up span#woah")
+        expect(results).to.equal(null)
+
