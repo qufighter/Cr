@@ -74,7 +74,7 @@ ooorrr
 
 ##### (how to extend)
 
-If you need to use `Cr-json.js` you'll have to require it.  This is the only other module besides `Cr.js` supported server side at this time.
+If you need to use `Cr-json.js` you'll have to require it.
 ```
   Cr = require('./node_modules/create-elements/Cr-json.js')(Cr);
 ```
@@ -82,7 +82,13 @@ or simply
 ```
   require('./node_modules/create-elements/Cr-json.js')(Cr);
 ```
-Or better yet, implement your own version of the default node initializer `Cr-node.js` - See that file for recommendations.
+
+include shortcuts including only Cr.div, Cr.span, Cr.a
+```
+  require('./node_modules/create-elements/Cr-shortcuts.js')(Cr);
+```
+
+See `Cr-node.js` - See that file for recommendations.
 
 ##### (how to render)
 
@@ -112,6 +118,32 @@ Turns out it's a lot faster to try to re-use the same document between requests
 
   document.head.appendChild(headerFrag);
 ```
+### (coffeescript)
+
+It works, used in tests for more examples
+
+```
+  myDiv = Cr.elm 'div',
+    style: "color:blue;"
+    class: Cr.list ["magic"]
+    [
+      Cr.elm 'span', {href:"defined", class:"wildtest"}, [Cr.txt(string1)]
+      Cr.elm 'span', {class:"word"}, [
+        Cr.elm 'span', {class:"wildtest"}, [Cr.txt(string1)]
+        Cr.elm 'span', {class:"word2 word"}, [Cr.txt(string2)]
+      ]
+      Cr.elm 'span', {class:"wildtest"}, [Cr.txt(string3)]
+      Cr.elm 'span', {class:"up"},
+        [Cr.elm 'span', {id:"woah",class:"woah1"}, [Cr.txt(string3)]]
+      Cr.elm 'span', {class:"word2-yourmom word word3"}, [Cr.txt(string3)]
+      Cr.elm 'span', {},
+        [
+          Cr.elm 'h3', {},
+            [Cr.elm 'span', {id:"woah",class:"woah1"}, [Cr.txt(string1)]]
+        ]
+    ]
+```
+
 ##### (really how to render)
 ```
   document.outerHTML; // with doctype
@@ -130,6 +162,8 @@ etc.
 that should give you everything you would expect to send to the client.  You may set `document.doctype` as needed.
 keep in mind `document` is not completely what you expect client side,
 it is a trimmed down version with only essential functionality for Cr
+and basic querySelectAll to retrieve "lost" node references.
+The outer most node is returned.
 ```
 See Cr-node-test-server.js
 See Cr-node-test-server-fast.js

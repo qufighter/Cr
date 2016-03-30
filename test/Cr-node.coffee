@@ -8,7 +8,7 @@ verifyTextNodeValue = (node, val)->
   expect(node.nodeValue).to.equal(val)
   expect(node.innerHTML).to.equal(val) # Cr-document only
   expect(node.outerHTML).to.equal(val) # Cr-document only
-  # textContent is DOM only for now
+  expect(node.textContent).to.equal(val) # Cr-document only
 
 document = new (require('../DOM/Cr-document.js'))
 Cr = require('../Cr-node.js')(document)
@@ -26,6 +26,8 @@ describe 'Cr', ->
       verifyTextNodeValue(myText, string3)
       myText.outerHTML=string1
       verifyTextNodeValue(myText, string1)
+      myText.textContent=string3
+      verifyTextNodeValue(myText, string3)
 
   describe '.elm', ->
 
@@ -58,11 +60,11 @@ describe 'Cr', ->
         expect(myDiv.outerHTML).to.equal("<div class=\"class1\">#{string1}</div>")
 
       it "modify attribute list", ->
-        myDiv.setAttribute('class', Cr.list(['class1','class2']))
+        myDiv.setAttribute('class', Cr.classList(['class1','class2']))
         expect(myDiv.outerHTML).to.equal("<div class=\"class1 class2\">#{string1}</div>")
 
       it "modify attribute keys list", ->
-        myDiv.setAttribute('class', Cr.list(Cr.keys({class1:1,class2:1,class3:0})))
+        myDiv.setAttribute('class', Cr.classList(Cr.keys({class1:1,class2:1,class3:0})))
         expect(myDiv.outerHTML).to.equal("<div class=\"class1 class2\">#{string1}</div>")
 
       it "modify attribute listKeys", ->
@@ -86,7 +88,7 @@ describe 'Cr', ->
       # document.querySelector('html') works in chrome
       myDiv = Cr.elm 'div',
         style: "color:blue;"
-        class: Cr.list ["magic"]
+        class: Cr.classList ["magic"]
         [
           Cr.elm 'span', {href:"defined", class:"wildtest"}, [Cr.txt(string1)]
           Cr.elm 'span', {class:"word"}, [
@@ -293,4 +295,3 @@ describe 'Cr', ->
       it "finds null `span.word > span.up span#woah`", ->
         results = myDiv.querySelectorAll("span.word > span.up span#woah")
         expect(results).to.equal(null)
-

@@ -119,8 +119,8 @@ var Cr = {
 			o+=k+':'+map[k]+';';
 		return o;
 	},
-	/*Cr.list creates list from array */
-	list: function(arr, seperator){
+	/*Cr.classList creates list from array */
+	classList: function(arr, seperator){
 		seperator = seperator || ' '; // default class list
 		return arr.join(seperator);
 	},
@@ -135,7 +135,7 @@ var Cr = {
 	},
 	/*Cr.listKeys creates list from truthy keys */
 	listKeys: function(map, seperator){
-		return this.list(this.keys(map),seperator);
+		return this.classList(this.keys(map),seperator);
 	},
 	/*Cr.events creates event arrays, or just use array literals */
 	evt : function(eventType,callback,useCapture){ return Array.prototype.slice.call(arguments); },
