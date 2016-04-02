@@ -8,7 +8,7 @@ verifyTextNodeValue = (node, val)->
   expect(node.nodeValue).to.equal(val)
   expect(node.innerHTML).to.equal(val) # Cr-document only
   expect(node.outerHTML).to.equal(val) # Cr-document only
-  expect(node.textContent).to.equal(val) # Cr-document only
+  expect(node.textContent).to.equal(val)
 
 document = new (require('../DOM/Cr-document.js'))
 Cr = require('../Cr-node.js')(document)
@@ -98,7 +98,7 @@ describe 'Cr', ->
           Cr.elm 'span', {class:"wildtest"}, [Cr.txt(string3)]
           Cr.elm 'span', {class:"up"},
             [Cr.elm 'span', {id:"woah",class:"woah1"}, [Cr.txt(string3)]]
-          Cr.elm 'span', {class:"word2-yourmom word word3"}, [Cr.txt(string3)]
+          Cr.elm 'span', {class:"word2-yourmom~ word word3"}, [Cr.txt(string3)]
           Cr.elm 'span', {},
             [
               Cr.elm 'h3', {},
@@ -170,10 +170,15 @@ describe 'Cr', ->
         expect(results.length).to.equal(1)
         expect(results[0].innerHTML).to.equal(string3)
 
-      # it 'finds all `span[class~="word2"]`', ->
-      #   results = myDiv.querySelectorAll('span[class~="word2"]')
-      #   expect(results.length).to.equal(1)
-      #   expect(results[0].innerHTML).to.equal(string2)
+      it 'finds all `span[class~="word2"]`', ->
+        results = myDiv.querySelectorAll('span[class~="word2"]')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string2)
+
+      it 'finds all `span[class~="word2-yourmom~"]`', ->
+        results = myDiv.querySelectorAll('span[class~="word2-yourmom~"]')
+        expect(results.length).to.equal(1)
+        expect(results[0].innerHTML).to.equal(string3)
 
       it 'finds no `span[href="undefined"]`', ->
         results = myDiv.querySelector('span[href="undefined"]')

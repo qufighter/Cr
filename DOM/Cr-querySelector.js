@@ -17,7 +17,7 @@ var mapTypes = {
 var comparitors = {
 	'' : function(v){return v;},
 	'=' : function(v){return new RegExp('^'+v+'$');},
-	'~=' : function(v){return new RegExp('^'+v+'\s|\s'+v+'\s|\s'+v+'$');},
+	'~=' : function(v){return new RegExp('^'+v+'\\s|\\s'+v+'\\s|\\s'+v+'$|^'+v+'$');},
 	'|=' : function(v){return new RegExp('^'+v+'$|^'+v+'-');}, // really useful?
 	'^=' : function(v){return new RegExp('^'+v);},
 	'$=' : function(v){return new RegExp(v+'$');},
@@ -29,7 +29,7 @@ var typeProcessors = {
 		var kvp = val.match(/^([^=~|^$*]+)([=~|^$*]{0,2})"*([^"]*)/), k, v, c;
 		if( !kvp || kvp.length < 4 ) return;
 		k=kvp[1], c=kvp[2], v=kvp[3];
-		console.log(val, k,c,v)
+		//console.log(val, k,c,v)
 		s.attributes[k] = comparitors[c](v); // we.match(v) if its truthy (if falsey, we allow the attribute basedon presense of key)
 	}
 }
@@ -37,16 +37,24 @@ var typeProcessors = {
 module.exports = {
 
 	nextSelector: function(selectors){
-		var selector = {classes:{}, attributes: {}, nextSelectorCombinator: null}, sstr, ncomb, ncombType, scmp, components, type, mapType, val;
+		var selector = {classes:{}, attributes: {}, nextSelectorCombinator: null}, sstr, astr, selectorString, ncomb, ncombType, scmp, acmp, scmparr, components, type, mapType, val;
 
-
+		// todo use some strategy to avoid quotes, a strategy in Cr-document.js addEventListener is not ideal but could work
 		// matches only first attribute 'div[class~="fun"]'.match(/^[^ >~+[]+[\[]?[^=~|^$*]*[=~|^$*]{0,2}[^ >~+]*/)
-		sstr = selectors.match(/^[^ >~+]+/); // TODO: warning [key="quoted"] attrib selector may contain these though [also anywhere inside brackets can contain ~]
+		//sstr = selectors.match(/^[^ >~+]+/); // TODO: warning [key="quoted"] attrib selector may contain these though [also anywhere inside brackets can contain ~]
+
+		sstr = selectors.match(/^[^ >~+\[]+/); // non attribute selectors
 		if( !sstr || sstr.length != 1 ) return false;
 		sstr = sstr[0]; //!!!!
 
+		astr = selectors.substr(sstr.length).match(/^([\[]{1}[^\[\]]+[\]]{1})+/g); // grab attribute selectors if present - we do not allow [] in quotes but everything else goes
+		if( !astr || astr.length != 1 ) astr = [""];
+		astr = astr[0];
 
-		ncomb = selectors.substr(sstr.length).match(/^[ >~+]+/);
+
+		selectorString = sstr+astr;
+
+		ncomb = selectors.substr(selectorString.length).match(/^[ >~+]+/);
 		//console.log(sstr, ncomb);
 		if( ncomb && ncomb.length ){
 			ncomb = ncomb[0];
@@ -56,12 +64,16 @@ module.exports = {
 			ncomb = "";
 		}
 
-		scmp = sstr.match(/[.#\[]?[^.#\[\]]+[\]]?/g); // "
+		//scmparr= selectorString.match(/[.#\[]?[^.#\[\]]+[\]]?/g); // matches both selector and attrib selector.... too generic since attrb could contain quoted selector chars
+		scmp = sstr.match(/[.#]?[^.#]+/g);
+		acmp = astr.match(/[\[]{1}[^\[\]]+[\]]{1}/g); // we do not allow [] in quotes at this time
+		if( !acmp ) acmp = [];
 
-		for( var i=0,l=scmp.length; i<l; i++ ){
-			components = scmp[i].match(/^([.#\[]?)([^\]]+)/);
+		scmparr = scmp.concat(acmp);
+
+		for( var i=0,l=scmparr.length; i<l; i++ ){
+			components = scmparr[i].match(/^([.#\[]?)([^\]]+)/);
 			if( !components || components.length < 3 ) continue; //somethign broke!!!
-
 			type = components[1];
 			val = components[2];
 			mapType = mapTypes[type];
@@ -75,7 +87,7 @@ module.exports = {
 			}
 		}
 
-		return {selector:selector, remaining: selectors.substr(sstr.length + ncomb.length) };
+		return {selector:selector, remaining: selectors.substr(selectorString.length + ncomb.length) };
 	},
 
 	parseSelectors: function(selectors){
