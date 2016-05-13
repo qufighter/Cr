@@ -99,6 +99,7 @@ module.exports = {
 		return allSelectors;
 	},
 
+	// todo: this can probably be transformed into a recursive generator function* to better support querySelect1
 	querySelectorAll: function(node, selectors, selectorIndex){
 		var matchedNodes = [], parentSelector, selectorComponent, nextSelectorComponent, nextNextSelectorComponent, nextChildNode;  // these nodes matched top level selector... need to probably verify they match full query before adding
 
@@ -168,5 +169,17 @@ module.exports = {
 		// and the element must really match the final selector
 		// sure we could just call document.querySelectorAll and return the matching node from that set if found
 		// but what is the fun in that!
+		var matches = true; // because we match empty selector
+		for( var s=selectors.length-1; s>-1; s-- ){
+			matches = node.__matchesSelectorComponent(selectors[s]);
+			if( !matches ) break; // we should count matches instead, since matched nodes form basis for nextNodes
+			// but if we do match... node moves some distance up parentNode (multiple arbatrary distances) tree (only 1 if >)
+			// or up the parentNode.childNodes tree if sibing selector
+			// so nodes is always an array of possible matching nodes that can be eliminated
+			// but a new set of nextNodes is always generated for subsequent iteration of s loop
+			// and if nextNodes.length is zero but we have more selectors to match, our node does not match
+			// if nextNodes.length and s==0 then we matched all selectors and return true
+		}
+		return matches;
 	}
 };

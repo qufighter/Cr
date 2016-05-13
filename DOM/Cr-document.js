@@ -283,6 +283,7 @@ var Cr_element = function(n){
 		querySelector.matches(this, selectorString);
 	}
 
+	// TODO - possibly move this into Cr-querySelector to isolate the DOM requirements of Cr-querySelector
 	this.__matchesSelectorComponent = function(selector){
 		// all selector must match, selector should really not be empty!
 		// when no selector component is specified, match SHOULD be false !
