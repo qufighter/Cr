@@ -238,7 +238,7 @@ var Cr_element = function(n){
 		var a, o = [], k;
 		for( k in this.attributes ){
 			a = this.attributes[k]
-			if( a || a===false || a==='' ) o.push(k+'="'+a.replace(/"/g, '&quot;')+'"');
+			if( a || a===false || a==='' ) o.push(k+'="'+(''+a).replace(/"/g, '&quot;')+'"');
 		}
 		if( o.length ) return ' '+o.join(' ');
 		return '';
