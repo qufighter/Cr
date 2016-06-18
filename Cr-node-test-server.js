@@ -99,6 +99,7 @@ function handleRequest(request, response){
 				src:"../Cr.png",
 				"class":"ie reserved word test",
 				"var":"ie reserved word test",
+				"var2":'quote "test" ><',
 				alt:"Javascript CreateElement Library Cr.elm",
 				style:"float:right;height:67px;width:500px;",
 				events:[["click",clickFunctionTest]]
