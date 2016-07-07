@@ -172,13 +172,10 @@ var Cr = {
 		while(node.lastChild)node.removeChild(node.lastChild);
 	},
 	unescapeHtml : function(str) { //trick used to make HTMLentiites work inside textNodes
-		if(str.length < 1)return str;
-		var temp = this.doc.createElement("div");
-		str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
-		temp.innerHTML = str;
-		var result = temp.childNodes[0].nodeValue;
-		this.empty(temp);
-		return result;
+		// https://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it
+		var txt = this.doc.createElement("textarea");
+		txt.innerHTML = str; // arguable you should still sanitize this string, most if not all browsers will not evaluate script in this context though
+		return txt.value;
 	}
 };
 
