@@ -81,10 +81,14 @@ Cr.fromArrayOfJsonObject = function(jsonObjectArray){
 };
 Cr.__extractEvents = function(events){
 	if(typeof(events[0])=='string')events=[events];
-	for( var e in events ){
+	if(events.length) for( var e in events ){
 		var fnName=events[e][1];
 		if(typeof(fnName)=='string')
 			events[e][1]=this.functionForString(fnName);
+	}else for( var e in events ){
+		if(typeof(e)=='string' && typeof(events[e])=='string'){
+			events[e]=this.functionForString(events[e]);
+		}
 	}
 };
 Cr.functionForString = function(fnName){
