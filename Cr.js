@@ -38,23 +38,27 @@ var Cr = {
           node type such as 'img' 'div' or 'a'
    attributes, an object {} that contains attributes.  Special Attributes:
           'childNodes' may be used instead of the following parameter, addchilds
+              {'href':'#','childNodes':[Cr.txt('click me')]}
           'events' may be used to specify events as follows:
-          {'href':'#','events':[['mouseover',callfn,false],['mouseout',callfn2]]}
-          the format for events is [eventType,callback,useCapture], you may also
-          specify a single event.
+              {'href':'#','events':[['mouseover',callfn,false],['mouseout',callfn2]]}
+              the format for each event is [eventType,callback,useCapture], you may also
+              specify a single event.
 
-          to make this more readable, one may use helper functions that return these arrays
-          {'event': Cr.event('mouseover',callfn)}
-          {'events': Cr.events(
-            Cr.event('mouseover',callfn,true),
-            Cr.evt(['mouseout',callfn2])
-          )}
+              to make this more readable, helper functions return these arrays
+              {'event': Cr.event('mouseover',callfn)}
+              {'events': Cr.events(
+                Cr.event('mouseover',callfn, true),
+                Cr.evt(['mouseout',callfn2])
+              )}
+
+              or specify as an object
+              {events:{'click':doSomething,'mouseout':callfn2}}
 
    addchilds, an array [] containing nodes to be appended as children, could be
           an array of calls to Cr.elm which create this array of nodes.
-   appnedTo) should ONLY be specified on the last element that needs to be created
-          which means the TOP level element (or the final parameter on the first
-          or outter most call to cr.elm).
+   appnedTo); Append To should ONLY be specified on the last element that needs to be created
+          which means the TOP level element (the final parameter on the first
+          and outter most call to Cr.elm).
  Empty Patteren:
           Cr.elm('div',{},[],document.body);
 *******************************************************************************/
@@ -63,8 +67,11 @@ var Cr = {
 		var ne=this.doc.createElement(nodeType),i,l,lev,a;
 		if(attributes){
 			if( lev=(attributes.event || attributes.events) ){
-				if(typeof(lev[0])=='string') ne.addEventListener(lev[0],lev[1],lev[2]);
-				else if(lev.length)
+				if(typeof(lev[0])=='string'){
+					ne.addEventListener(lev[0],lev[1],lev[2]);
+				}else if(Object.keys(lev).length){
+					for(i in lev) ne.addEventListener(i,lev[i]);
+				}else if(lev.length)
 					for(i=0,l=lev.length;i<l;i++)
 						ne.addEventListener(lev[i][0],lev[i][1],lev[i][2]);
 			}
