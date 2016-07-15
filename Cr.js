@@ -67,13 +67,13 @@ var Cr = {
 		var ne=this.doc.createElement(nodeType),i,l,lev,a;
 		if(attributes){
 			if( lev=(attributes.event || attributes.events) ){
-				if(typeof(lev[0])=='string'){
+				if(typeof(lev[0])=='string')
 					ne.addEventListener(lev[0],lev[1],lev[2]);
-				}else if(Object.keys(lev).length){
-					for(i in lev) ne.addEventListener(i,lev[i]);
-				}else if(lev.length)
+				else if(lev.length)
 					for(i=0,l=lev.length;i<l;i++)
 						ne.addEventListener(lev[i][0],lev[i][1],lev[i][2]);
+				else if(Object.keys(lev).length)
+					for(i in lev) ne.addEventListener(i,lev[i]);
 			}
 			if( attributes.childNodes ){
 				if(appnedTo || (addchilds && addchilds.length)){
