@@ -92,7 +92,7 @@ var Cr = {
 					//handled earlier
 				}else if( i == 'checked' || i == 'selected' ){
 					if(a)ne.setAttribute(i,i);
-				}else if( a || a===false || a==='' ) ne.setAttribute(i,a);
+				}else if( a || a==false ) ne.setAttribute(i,''+a); // omit undefined or null value attributes, preserve false,0 value
 			}
 		}
 		if(addchilds){
