@@ -13,6 +13,11 @@ verifyTextNodeValue = (node, val)->
 document = new (require('../DOM/Cr-document.js'))
 Cr = require('../Cr-node.js')(document)
 
+describe 'Null/Undefined Attribute Omission', ->
+  it 'works', ->
+    expect(Cr.elm('div',{a:undefined,b:null,c:0,d:false,e:1},[]).outerHTML)
+      .to.equal('<div c="0" d="false" e="1"></div>')
+
 describe 'Cr', ->
   describe '.txt', ->
     it "creates '#{string1}' node", ->
