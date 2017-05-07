@@ -14,11 +14,11 @@ This library is great if you
 
 
 Here is what the transition looks like:
-https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644
+[link](https://github.com/qufighter/ColorPick/commit/a3bd273409554702c25f6653808352e1ac55d644)
 
 Harnessing the power of javascript to 
 internationalize the chrome extension example above:
-https://github.com/qufighter/ColorPick/commit/5e9be5c6af7e0c1311d709aeac093ee86104e6dc
+[link](https://github.com/qufighter/ColorPick/commit/5e9be5c6af7e0c1311d709aeac093ee86104e6dc)
 
 The javascript grew by only 1KB in size from HTML, 
 everything is in the same place it was...
@@ -118,6 +118,37 @@ Turns out it's a lot faster to try to re-use the same document between requests
 
   document.head.appendChild(headerFrag);
 ```
+
+a special attribute childNodes may be used, and you may then omit the 3rd argument - this provides superior indentation:
+
+```
+  var elm1 = Cr.elm('div',{
+    class:'cssrules',
+    childNodes: [
+      Cr.elm('a',{
+        href:'#freshLinks',
+        childNodes: [Cr.txt('Click Me '), Cr.ent('&nbsp;')]
+      })
+    ]
+  },document.body);
+
+  var link2 = Cr.elm('a',{
+    href:'#link2',
+    childNodes: [
+      Cr.txt("You Know What to Do!"),
+      Cr.elm('br'),
+      Cr.txt("Make text")
+    ]
+  },elm1);
+
+  Cr.insertNode(link2, document.body, elm1);
+
+  Cr.elm('title',{
+    childNodes: [Cr.txt("Document Title")]
+  },document.head);
+
+```
+
 ### (coffeescript)
 
 It works, used in tests for more examples
@@ -142,7 +173,10 @@ It works, used in tests for more examples
             [Cr.elm 'span', {id:"woah",class:"woah1"}, [Cr.txt(string1)]]
         ]
     ]
+    document.body
 ```
+
+a special attribute childNodes may be used, and you may then omit the 3rd argument child nodes array
 
 ##### (really how to render)
 ```
