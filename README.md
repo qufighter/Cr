@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/qufighter/Cr.svg)](https://travis-ci.org/qufighter/Cr)
+[![Build Status](https://travis-ci.org/qufighter/Cr.svg?branch=master)](https://travis-ci.org/qufighter/Cr)
 
 ### Welcome to Cr.elm Library - think of it as document.create
 

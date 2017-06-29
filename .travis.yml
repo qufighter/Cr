@@ -6,3 +6,8 @@ install:
 script: "npm test"
 git:
   depth: 3
+branches:
+  only:
+  - master
+  - /^build-.*$/
+
