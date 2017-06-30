@@ -29,6 +29,23 @@ var Cr_fragment = function(ownerNode){
 	this.childNodes = [];
 	this.parentNode = false;
 
+	this.cloneNode = function(deep){
+		return this.__cloneNode(new Cr_fragment());
+	};
+
+	this.__cloneNode = function(newFragment){
+		for( var i in this ){
+			if( typeof(this[i]) != 'function' )
+				if( i == 'childNodes' ){ // todo, if not deep then we leave the array empty instead
+					for( var c = 0,cl=this[i].length; c<cl; c++ ){
+						newFragment[i].push(this[i][c].cloneNode(deep));
+					}
+				}
+				newNode[i] = this[i]; // EXCEPT for cases where [] or typeof =='function'
+		}
+		return newFragment;
+	}
+
 	this.appendChild = function(c){
 		// c is suppose to be a node, but it could be a fragment too... since fragments render like regular HTML its not really distinguishable server side
 		// if c is a fragment.... we might do things a little differently
@@ -156,6 +173,22 @@ var Cr_element = function(n){
 	this.removeAttribute = function(key){
 		// return delete this.attributes[key];
 		this.attributes[key] = null; // we omit null or undefined attributes
+	};
+
+	this.cloneNode = function(deep){
+		var newNode = new Cr_element(this.localName);
+		for( var i in this ){
+			if( typeof(this[i]) != 'function' )
+				 if(i == '__fragment'){
+					newNode[i] = this[i].__cloneNode(newNode.__fragment);
+				}else if( typeof(this[i]) == 'object' ){
+					for( var p in this[i] ){
+						newNode[i][p] = this[i][p];
+					}
+				}else
+					newNode[i] = this[i]; // EXCEPT for cases where {} or __fragment // EXCEPT for cases where typeof =='function'
+		}
+		return newNode;
 	};
 
 	this.addEventListener = function(event, listener, captrue){
