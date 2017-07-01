@@ -96,9 +96,11 @@ var Cr = {
 			}
 		}
 		if(addchilds){
-			for( i=0,l=addchilds.length;i<l;i++ ){
-				if(addchilds[i])ne.appendChild(addchilds[i]);//you probably forgot a comma when calling the function
-			}
+			if( addchilds.length )
+				for( i=0,l=addchilds.length;i<l;i++ )
+					if(addchilds[i])ne.appendChild(addchilds[i]); //you probably forgot a comma when calling the function
+			else
+				console.warn('Cr Exception: child nodes must be an array: [...]');
 		}
 		if(appnedTo){
 			this.insertNode(ne, appnedTo);
