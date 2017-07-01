@@ -36,16 +36,20 @@ var Cr_fragment = function(ownerNode){
 	this.__cloneNode = function(deep, newFragment){
 		if( deep ){
 			for( var i in this ){
-				if( typeof(this[i]) != 'function' )
+				if( typeof(this[i]) != 'function' && i != 'parentNode' ){
 					if( i == 'childNodes' ){ // todo, if not deep then we leave the array empty instead
 						for( var c = 0,cl=this[i].length; c<cl; c++ ){
 							newFragment[i].push(this[i][c].cloneNode(deep));
 						}
+					}else{
+						// console.log(' see what is copied ! !! AAAA', i);
+						newFragment[i] = this[i]; // EXCEPT for cases where [] or typeof =='function'
 					}
-				else
-					newFragment[i] = this[i]; // EXCEPT for cases where [] or typeof =='function'
+				}
 			}
+
 		}
+
 		return newFragment;
 	}
 
@@ -189,7 +193,7 @@ var Cr_element = function(n){
 						newNode[i][p] = this[i][p]; // shallow clone for attributes
 					}
 				}else{
-					// console.log(' see what is copied ! !! ', i);
+					// console.log(' see what is copied ! !! BBBB', i);
 					newNode[i] = this[i]; // EXCEPT for cases where {} or __fragment // EXCEPT for cases where typeof =='function'
 				}
 
