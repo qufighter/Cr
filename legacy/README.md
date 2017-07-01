@@ -46,3 +46,12 @@ If you really must attach events earlier
 use 'loadevents' instead of 'events' (only available in `Cr-legacy.js` and only useful for images, see `Cr-img.js`)
 
 Some more info about how to handle events can be found here: [Javascript on events to addEventListener](http://vidsbee.com/Cr.elm/fromhtml/#howtouse)
+
+Fast forward to current version to find 
+```
+Cr.elm('div', {
+  events: Cr.events(Cr.event('click', doSomething), Cr.evt('mouseup', doSomething)),
+  childNodes: [
+    Cr.txt('link text')
+  ]
+}, document.body);

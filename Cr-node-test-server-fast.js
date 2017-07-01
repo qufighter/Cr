@@ -22,7 +22,7 @@ function fullTime(startTime){
 var Cr = require('./Cr-node.js')(); // you may just require('create-elements')() - handled by Cr-node.js
 var document = Cr.doc;
 
-// keep references to any element you need to interact with.  there is no document.getElementById or anything that will bloat Cr-document - though the case for expanding certain features, like cloneNode is strong.
+// keep references to any element you need to interact with.  there is no document.getElementById or anything that will bloat Cr-document (does include querySelectorAll) - though the case for enhancing certain features, like cloneNode is strong.
 var topTextNode = Cr.txt();
 var topSpan = Cr.elm('span',{'id':'pathHit1'},[topTextNode]);
 

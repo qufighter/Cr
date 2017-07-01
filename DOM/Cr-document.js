@@ -29,6 +29,26 @@ var Cr_fragment = function(ownerNode){
 	this.childNodes = [];
 	this.parentNode = false;
 
+	this.cloneNode = function(deep){
+		return this.__cloneNode(deep, new Cr_fragment());
+	};
+
+	this.__cloneNode = function(deep, newFragment){
+		if( deep ){
+			for( var i in this ){
+				if( typeof(this[i]) != 'function' )
+					if( i == 'childNodes' ){ // todo, if not deep then we leave the array empty instead
+						for( var c = 0,cl=this[i].length; c<cl; c++ ){
+							newFragment[i].push(this[i][c].cloneNode(deep));
+						}
+					}
+				else
+					newFragment[i] = this[i]; // EXCEPT for cases where [] or typeof =='function'
+			}
+		}
+		return newFragment;
+	}
+
 	this.appendChild = function(c){
 		// c is suppose to be a node, but it could be a fragment too... since fragments render like regular HTML its not really distinguishable server side
 		// if c is a fragment.... we might do things a little differently
@@ -156,6 +176,26 @@ var Cr_element = function(n){
 	this.removeAttribute = function(key){
 		// return delete this.attributes[key];
 		this.attributes[key] = null; // we omit null or undefined attributes
+	};
+
+	this.cloneNode = function(deep){
+		var newNode = new Cr_element(this.localName);
+		for( var i in this ){
+			if( typeof(this[i]) != 'function' && newNode.__fragment[i] != newNode[i] ){
+				if(i == '__fragment'){
+					newNode[i] = this[i].__cloneNode(deep, newNode.__fragment);
+				}else if( typeof(this[i]) == 'object' ){
+					for( var p in this[i] ){
+						newNode[i][p] = this[i][p]; // shallow clone for attributes
+					}
+				}else{
+					// console.log(' see what is copied ! !! ', i);
+					newNode[i] = this[i]; // EXCEPT for cases where {} or __fragment // EXCEPT for cases where typeof =='function'
+				}
+
+			}
+		}
+		return newNode;
 	};
 
 	this.addEventListener = function(event, listener, captrue){
@@ -323,6 +363,10 @@ var Cr_element = function(n){
 var Cr_text = function(t){
 	this.text = t;
 	this.nodeType = 3; // could define getter only
+
+	this.cloneNode = function(){
+		return new Cr_text(this.text);
+	}
 
 	this.__outerHTML = function(){ return this.text; };
 
