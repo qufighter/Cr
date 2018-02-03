@@ -179,11 +179,14 @@ var Cr = {
 	},
 	empty : function(node){
 		while(node.lastChild)node.removeChild(node.lastChild);
+		return node;
 	},
 	unescapeHtml : function(str) { //trick used to make HTMLentiites work inside textNodes
 		// https://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it
 		var txt = this.doc.createElement("textarea");
 		txt.innerHTML = str; // arguable you should still sanitize this string, most if not all browsers will not evaluate script in this context though
+		// only the text is returned, the txt area node is discarded and never added to the DOM
+		// other than Cr.ent this function is never used.
 		return txt.value;
 	}
 };
