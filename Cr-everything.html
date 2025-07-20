@@ -31,20 +31,20 @@
 	// antyhing with a .length used as either appendto argument, woes... select have a .length, wierd right?  wonder if any ohter nodes liek this defy being an appendTo (but in 3rd posiiton) argument...
 	Cr.elm('option', {value:'a2',childNodes:[Cr.txt('val2')]}, sel);
 	Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val3')]}, [Cr.txt('val4')], sel);
-	Cr.elm('option', {value:'a3',}, [Cr.txt('val5')], sel);
-	Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val6')]}, [], sel);
-	Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val7'),Cr.txt('val8')]}, Cr.txt('not-quite-an-error'), sel);
+	Cr.elm('option', {value:'a4',}, [Cr.txt('val5')], sel);
+	Cr.elm('option', {value:'a5',childNodes:[Cr.txt('val6')]}, [], sel);
+	Cr.elm('option', {value:'a6',childNodes:[Cr.txt('val7'),Cr.txt('val8')]}, Cr.txt('not-quite-an-error'), sel);
 	//Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val9'),Cr.txt('val0')]}, 'quite-an-error', sel);
 	
 	console.log('finally verify warning output:');
 	// finally, the origional intent is, for things like this, to see the warning output (childNodes may no longer be used as a vanilla attribute):
 	// this errors out because 'abc' is not a node we can append (at this time, tbd honestly non Cr.txt wrapped strings may be supportable but I'd rather let the browser support it or not support it than hack more conditionals in place slowing the program down for what is otherwise support for programatic errors...
 	try{
-		Cr.elm('option', {value:'a3',childNodes:'abc',}, [Cr.txt('not-quite-an-error')], sel);
+		Cr.elm('option', {value:'a7',childNodes:'abc',}, [Cr.txt('not-quite-an-error')], sel);
 	}catch(ex1){
 		console.error(ex1);
 	}
-	Cr.elm('option', {value:'a3',childnodes:'abc',}, [Cr.txt('works-no-error')], sel);
+	Cr.elm('option', {value:'a8',childnodes:'abc',}, [Cr.txt('works-no-error')], sel);
 
 	Cr.elm('hr',{},[],body);
 	Cr.elm('djiv',{childNodes:[Cr.txt('eot')]},body);
