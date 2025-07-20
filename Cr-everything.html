@@ -17,6 +17,38 @@
 		Cr.ent('clickme')
 	],body)
 	
+	Cr.elm('hr',{},[],body); // such long form writing;
+	//Cr.elm('hr',{},body); // such long form writing; hello world fixme
+	//Cr.elm('hr',body); // such long form writing; hello world fixme
+	// eeeh what I use is:
+	// body.appendChild(Cr.elm('hr')); // sure its long but it works
+	// Cr.insertNode(Cr.elm('hr'),body); // even longer!
+	
+	// the dreaded select, oh what a travesty to have to add child nodes another way than the appnedTo arg /s
+	var sel = Cr.elm('select',{id:'meh-select-down',childNodes:[
+		Cr.elm('option', {value:'a1',childNodes:[Cr.txt('val1')]})
+	]}, body)
+	// antyhing with a .length used as either appendto argument, woes... select have a .length, wierd right?  wonder if any ohter nodes liek this defy being an appendTo (but in 3rd posiiton) argument...
+	Cr.elm('option', {value:'a2',childNodes:[Cr.txt('val2')]}, sel);
+	Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val3')]}, [Cr.txt('val4')], sel);
+	Cr.elm('option', {value:'a3',}, [Cr.txt('val5')], sel);
+	Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val6')]}, [], sel);
+	Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val7'),Cr.txt('val8')]}, Cr.txt('not-quite-an-error'), sel);
+	//Cr.elm('option', {value:'a3',childNodes:[Cr.txt('val9'),Cr.txt('val0')]}, 'quite-an-error', sel);
+	
+	console.log('finally verify warning output:');
+	// finally, the origional intent is, for things like this, to see the warning output (childNodes may no longer be used as a vanilla attribute):
+	// this errors out because 'abc' is not a node we can append (at this time, tbd honestly non Cr.txt wrapped strings may be supportable but I'd rather let the browser support it or not support it than hack more conditionals in place slowing the program down for what is otherwise support for programatic errors...
+	try{
+		Cr.elm('option', {value:'a3',childNodes:'abc',}, [Cr.txt('not-quite-an-error')], sel);
+	}catch(ex1){
+		console.error(ex1);
+	}
+	
+	Cr.elm('hr',{},[],body);
+	Cr.elm('djiv',{childNodes:[Cr.txt('eot')]},body);
+
+	// we don't like having two .body nodes... who knows what this might break...! removing one
 	document.addEventListener('DOMContentLoaded',function(){
 		var bodyElms=document.getElementsByTagName('body');
 		for(var b=1,l=bodyElms.length;b<l;b++){

@@ -58,9 +58,11 @@ var Cr = {
           an array of calls to Cr.elm which create this array of nodes.
    appnedTo); Append To should ONLY be specified on the last element that needs to be created
           which means the TOP level element (the final parameter on the first
-          and outter most call to Cr.elm).
- Empty Patteren:
+          and outer most call to Cr.elm).
+ Empty Pattern:
           Cr.elm('div',{},[],document.body);
+ Preferred Empty Pattern (nicer code indentation/nesting):
+          Cr.elm('div',{childNodes:[]},document.body);
 *******************************************************************************/
 	doc : typeof document != 'undefined' ? document : null,
 	elm : function(nodeType,attributes,addchilds,appnedTo){
@@ -76,12 +78,10 @@ var Cr = {
 					for(i in lev) ne.addEventListener(i,lev[i]);
 			}
 			if( attributes.childNodes ){
-				if(appnedTo || (addchilds && addchilds.length)){
+				if(appnedTo || (addchilds && addchilds.length && !addchilds.nodeName)){ // the select element has a .length property but is a valid appnedTo and certainly is not an array of child nodes!
 					console.warn("Cr Exception: if providing attributes.childNodes; 3 args max, addchilds argument becomes final argument appnedTo");
-					if( addchilds.length ){
-						attributes.childNodes = attributes.childNodes.concat(addchilds);
-						addchilds = appnedTo;
-					}
+					attributes.childNodes = attributes.childNodes.concat(addchilds);
+					addchilds = appnedTo; // support for having BOTH supplied, with a console warning generated, what a wierd use case to support (its migration code for wierd invalid atributes that maybe use to work dv.setAttribute('childNodes', 'abc')
 				}
 				appnedTo = addchilds;
 				addchilds = attributes.childNodes;
